@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+
+  <div id="loading-screen">
+    <div class="loader"></div>
+    <p>Baking fresh data…</p>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="card">
+    <div class="nav-tabs">
+      <div class="nav-item active" onclick="switchView('input')">🤏 MIX</div>
+      <div class="nav-item" onclick="switchView('history')">🧁 TASTE</div>
+      <div class="nav-item" onclick="switchView('stats')">🍕 SLICE</div>
+    </div>
+
+    <div class="content">
+      <div id="view-input" class="view active">
+        <div class="field-group"><label>📅 Bake Day</label><input type="date" id="date"></div>
+        <div class="field-group"><label>💸 Cookie Dough (VND ×1K)</label><input type="number" id="amount"
+            placeholder="0"></div>
+        <div class="field-group">
+          <label>👩‍🍳 Chef</label>
+          <select id="payerSelect" style="width:100%; padding:10px; border-radius:8px;"></select>
+        </div>
+
+        <div class="field-group">
+          <label>🙅 Co-tasters</label>
+          <div id="split-box-main" class="split-box"></div>
+          <div id="split-box-more" class="split-box" style="display:none; margin-top:10px;"></div>
+          <div id="toggle-more-btn" onclick="toggleMorePeople()"
+            style="display:none; color:var(--text-sub); font-size:12px; cursor:pointer;">
+            + Add Taster
+          </div>
+        </div>
+
+        <div class="field-group"><label>Recipe Note</label>
+          <input id="note" placeholder="Cafe...">
+        </div>
+        <button id="btnSave" onclick="save()">Serve</button>
+      </div>
+
+      <div id="view-history" class="view">
+        <div id="history-list"></div>
+      </div>
+      <div id="view-stats" class="view">
+        <div id="myChart" style="height:300px;"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

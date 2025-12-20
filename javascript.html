@@ -1,0 +1,161 @@
+<script>
+    let cachedData = null;
+
+    // Hàm hiển thị thông báo mới
+    function showNotification(message, type = 'success') {
+        const t = document.getElementById('toast');
+        t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + message;
+        t.className = 'show ' + (type === 'success' ? 'toast-success' : 'toast-error');
+
+        setTimeout(() => {
+            t.className = '';
+        }, 3500);
+    }
+
+    window.onload = () => {
+        document.getElementById('date').valueAsDate = new Date();
+        google.script.run
+            .withSuccessHandler(data => {
+                cachedData = data;
+                renderForm(data.people);
+                document.getElementById('loading-screen').style.display = 'none';
+            })
+            .withFailureHandler(err => {
+                showNotification("Connection error!", "error");
+                document.getElementById('loading-screen').innerHTML = "<p>Error: Please refresh</p>";
+            })
+            .getInitialData();
+    };
+
+    function renderForm(people) {
+        const sel = document.getElementById('payerSelect');
+        const mainBox = document.getElementById('split-box-main');
+        const moreBox = document.getElementById('split-box-more');
+        const toggleBtn = document.getElementById('toggle-more-btn');
+
+        sel.innerHTML = '';
+        mainBox.innerHTML = '';
+        moreBox.innerHTML = '';
+
+        people.forEach((person, index) => {
+            // 1. Vẫn thêm tất cả vào Dropdown người trả
+            sel.innerHTML += `<option value="${person}">${person}</option>`;
+
+            // Tạo HTML cho checkbox
+            const html = `
+      <div class="check-item">
+        <input type="checkbox" id="cb${person}" value="${person}" checked>
+        <label for="cb${person}">${person}</label>
+      </div>`;
+
+            // 2. Chia người vào 2 nhóm
+            if (index < 2) {
+                // Hiện 2 người đầu
+                mainBox.innerHTML += html;
+            } else {
+                // Ẩn từ người thứ 3
+                moreBox.innerHTML += html;
+            }
+        });
+
+        // 3. Hiện nút "+" nếu danh sách có hơn 2 người
+        if (people.length > 2) {
+            toggleBtn.style.display = 'inline-block';
+        }
+    }
+
+    // Hàm xử lý khi bấm vào nút "Thêm người"
+    function toggleMorePeople() {
+        const moreBox = document.getElementById('split-box-more');
+        const toggleBtn = document.getElementById('toggle-more-btn');
+
+        if (moreBox.style.display === 'none') {
+            moreBox.style.display = 'flex';
+            toggleBtn.innerText = '- Close Oven';
+        } else {
+            moreBox.style.display = 'none';
+            toggleBtn.innerText = '+ Add Taster';
+        }
+    }
+
+    function switchView(view) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.getElementById('view-' + view).classList.add('active');
+        event.currentTarget.classList.add('active');
+
+        if (view === 'history') renderHistory();
+        if (view === 'stats') renderStats();
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('history-list');
+        list.innerHTML = ''; // QUAN TRỌNG: Xóa sạch danh sách cũ trước khi render lại
+
+        if (!cachedData || !cachedData.history || cachedData.history.length === 0) {
+            list.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No data this month</p>";
+            return;
+        }
+
+        list.innerHTML = cachedData.history.map(item => `
+      <div class="history-item">
+        <div>
+          <strong style="display:block; margin-bottom:2px;">${item.note || 'Expense'}</strong>
+          <small style="color:var(--text-sub)">${item.date} • by ${item.payer}</small>
+        </div>
+        <div style="color:var(--primary); font-weight:800; font-size:1.1rem;">${item.amount}k</div>
+      </div>
+    `).join('');
+    }
+
+    google.charts.load('current', { 'packages': ['corechart'] });
+    function renderStats() {
+        const stats = cachedData.stats;
+        const dataArray = [['Person', 'Total']];
+        for (let p in stats) dataArray.push([p, stats[p]]);
+        const data = google.visualization.arrayToDataTable(dataArray);
+        new google.visualization.PieChart(document.getElementById('myChart')).draw(data, { pieHole: 0.4, chartArea: { width: '100%', height: '80%' } });
+    }
+
+    function save() {
+        const btn = document.getElementById('btnSave');
+        const amountInput = document.getElementById('amount');
+        const noteInput = document.getElementById('note');
+
+        const payload = {
+            date: document.getElementById('date').value,
+            amount: amountInput.value,
+            payer: document.getElementById('payerSelect').value,
+            sharedWith: [...document.querySelectorAll('#split-box input:checked')].map(cb => cb.value),
+            note: noteInput.value
+        };
+
+        if (!payload.amount || payload.amount <= 0) {
+            showNotification("Please enter amount", "error");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "SAVING...";
+
+        google.script.run
+            .withSuccessHandler(() => {
+                showNotification("Transaction Saved!");
+                amountInput.value = "";
+                noteInput.value = "";
+                btn.disabled = false;
+                btn.innerText = "SAVE";
+
+                // Cập nhật dữ liệu ngầm để các Tab History/Stats luôn mới
+                google.script.run.withSuccessHandler(data => {
+                    cachedData = data;
+                }).getInitialData();
+            })
+            .withFailureHandler(err => {
+                showNotification("Save failed: " + err, "error");
+                btn.disabled = false;
+                btn.innerText = "SAVE";
+            })
+            .saveExpense(payload);
+    }
+</script>
