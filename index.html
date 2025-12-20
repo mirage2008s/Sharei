@@ -35,19 +35,22 @@
         </div>
 
         <div class="field-group">
-          <label>🙅 Co-tasters</label>
+          <label>🙅 Tasters</label>
           <div id="split-box-main" class="split-box"></div>
-          <div id="split-box-more" class="split-box" style="display:none; margin-top:10px;"></div>
+          <div id="split-box-more" class="split-box" style="display:none;"></div>
           <div id="toggle-more-btn" onclick="toggleMorePeople()"
-            style="display:none; color:var(--text-sub); font-size:12px; cursor:pointer;">
-            + Add Taster
+            style="color:var(--text-sub); font-size:12px; cursor:pointer;">+ Add Taster
           </div>
         </div>
 
         <div class="field-group"><label>Recipe Note</label>
           <input id="note" placeholder="Cafe...">
         </div>
-        <button id="btnSave" onclick="save()">Serve</button>
+        <button id="btnSave" onclick="save()">SERVE</button>
+
+        <p style="color:var(--text-sub); font-size:12px; margin: 20px 0; text-align: center;">
+          Made with 🍪 by Ozz <span id="app-version">v1.0</span>
+        </p>
       </div>
 
       <div id="view-history" class="view">
@@ -58,6 +61,7 @@
       </div>
     </div>
   </div>
+
   <?!= include('javascript'); ?>
 </body>
 
