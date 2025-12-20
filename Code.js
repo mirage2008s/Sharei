@@ -1,10 +1,15 @@
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('index')
+  // Thay createHtmlOutputFromFile bằng createTemplateFromFile
+  const template = HtmlService.createTemplateFromFile('index'); 
+  
+  // Xử lý các đoạn mã scriptlet (như lệnh include) và trả về kết quả
+  return template.evaluate()
     .setTitle('Sharei')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0');
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// Helper function to include separate HTML files
+// Hàm này giữ nguyên
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
