@@ -1,12 +1,24 @@
-function doGet() {
-  // Thay createHtmlOutputFromFile bằng createTemplateFromFile
-  const template = HtmlService.createTemplateFromFile('index'); 
-  
-  // Xử lý các đoạn mã scriptlet (như lệnh include) và trả về kết quả
-  return template.evaluate()
-    .setTitle('Sharei')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+// Thay thế hàm doGet cũ
+function doGet(e) {
+  const data = getInitialData(); // Hàm lấy people, history, stats của bạn
+  return ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Hàm doPost để nhận dữ liệu từ GitHub gửi sang
+function doPost(e) {
+  try {
+    const params = JSON.parse(e.postData.contents);
+    
+    // Gọi hàm lưu vào Sheet của bạn (giả sử tên là saveToSheet)
+    const result = saveDataToSheet(params); 
+    
+    return ContentService.createTextOutput(JSON.stringify({status: "success", data: result}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({status: "error", message: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // Hàm này giữ nguyên
