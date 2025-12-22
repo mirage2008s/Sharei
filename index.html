@@ -10,31 +10,34 @@
     :root {
       --primary: #FFDD00;
       --primary-light: #FBE87F;
-      --bg: #f1f5f9;
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --text-primary: #1e293b;
       --text-sub: #64748b;
-      --border: #e2e8f0;
+      --blur-bg: blur(10px);
     }
 
     body {
-      font-family: sans-serif;
-      background: var(--bg);
-      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      display: flex;
       flex-direction: column;
-      /* Xếp các phần tử theo chiều dọc */
       align-items: center;
-      /* Căn giữa tất cả theo chiều ngang */
       min-height: 100vh;
+      box-sizing: border-box;
     }
 
     .card {
-      background: white;
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur-bg);
+      -webkit-backdrop-filter: var(--blur-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
       width: 100%;
       max-width: 500px;
-      margin: 0 auto;
-      min-height: 100vh;
-      /* Dự phòng cho trình duyệt khác */
-      min-height: -webkit-fill-available;
-      /* Tối ưu cho Safari iOS */
+      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -46,12 +49,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: white;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
+      backdrop-filter: blur(5px);
     }
 
     .loader {
@@ -71,71 +75,103 @@
       }
     }
 
-    /* Tabs */
-    .nav-tabs {
+    /* Segmented Control Tabs */
+    .segmented-control {
       display: flex;
-      background: white;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 4px;
+      margin: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
-    .nav-item {
+    .segmented-item {
       flex: 1;
       text-align: center;
-      padding: 15px 0;
-      font-size: 13px;
-      font-weight: bold;
+      padding: 12px 0;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--text-sub);
       cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      margin: 0 2px;
+      position: relative;
+  z-index: 2;
     }
 
-    .nav-item.active {
-      color: var(--primary);
-      border-bottom: 3px solid var(--primary);
-    }
+    .segmented-item.active {
+  background: transparent;
+  color: var(--text-primary);
+}
+
 
     .content {
-      padding: 20px 20px 5px 20px;
+      padding: 0 20px 20px 20px;
     }
 
     .view {
       display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .view.active {
       display: block;
     }
 
-    /* Form Styles */
+    /* Form Styles với Glassmorphism */
     .field-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     label {
       display: block;
-      font-size: 14px;
-      font-weight: bold;
+      font-size: 13px;
+      font-weight: 600;
       color: var(--text-sub);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    input {
+    input, select {
       width: 100%;
-      padding: 12px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
+      padding: 14px 16px;
+      font-size: 15px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       box-sizing: border-box;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 16px rgba(255, 221, 0, 0.15);
     }
 
     .split-box {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .check-item {
       flex: 1;
+      min-width: 80px;
     }
 
     .check-item input {
@@ -144,73 +180,78 @@
 
     .check-item label {
       display: block;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
       text-align: center;
-      font-weight: bold;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .check-item input:checked+label {
       background: var(--primary);
       color: white;
       border-color: var(--primary);
+      box-shadow: 0 4px 16px rgba(255, 221, 0, 0.3);
     }
 
     #btnSave {
       width: 100%;
-      padding: 15px;
-      background: var(--primary);
+      padding: 16px;
+      background: linear-gradient(135deg, #FFDD00, #FFCC00);
       color: white;
       border: none;
-      border-radius: 10px;
-      font-weight: bold;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 16px;
       cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(255, 221, 0, 0.3);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
+    #btnSave:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(255, 221, 0, 0.4);
+    }
+
+    #btnSave:active {
+      transform: translateY(0);
+    }
+
+    #btnSave:disabled {
+      opacity: 0.6;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Toast Notification với Glassmorphism */
     #toast {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #333;
-      color: white;
-      padding: 8px;
-      border-radius: 5px;
-      opacity: 0;
-      transition: 0.3s;
-      pointer-events: none;
-    }
-
-    #toggle-more-btn {
-      display: inline-block;
-      padding: 5px 10px;
-      background: var(--primary-light);
-      border-radius: 7px;
-      transition: 0.3s;
-    }
-
-    #toggle-more-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* Cập nhật CSS Toast để đảm bảo luôn nổi bật ở góc phải */
-    #toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: gainsboro;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      top: 10px;
+      right: 10px;
+      background: var(--blur-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--text-primary);
+      padding: 10px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       z-index: 10000;
-      /* Đảm bảo cao hơn tất cả */
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       transform: translateX(150%);
       opacity: 0;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     #toast.show {
@@ -219,111 +260,237 @@
     }
 
     .toast-success {
-      border-right: 5px solid #10b981;
+      border-left: 4px solid #10b981;
     }
 
     .toast-error {
-      border-right: 5px solid #ef4444;
+      border-left: 4px solid #ef4444;
     }
 
-    /* Style cho item history để không bị dính vào nhau */
+    /* History Items với Glassmorphism */
     .history-item {
-      padding: 15px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 10px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /* 1. Đảm bảo tất cả các ô có cùng cách tính kích thước */
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select {
-      width: 100%;
-      /* Chiếm hết chiều ngang của container */
-      box-sizing: border-box;
-      /* QUAN TRỌNG: Tính cả padding vào trong width */
-      /* height: 45px; */
-      /* Ép cùng một độ cao cho tất cả */
-      padding: 10px 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background-color: white;
-      appearance: none;
-      /* Xóa bỏ định dạng mặc định của hệ điều hành */
-      -webkit-appearance: none;
-      font-size: 16px !important;
+    .history-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     }
 
-    /* 2. Riêng với input date trên iOS thường bị dư lề */
+    /* Chart Container với Glassmorphism */
+    #myChart {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Header Style */
+    .app-header {
+      text-align: center;
+      padding: 10px 20px 10px 20px;
+    }
+
+    .app-title {
+      color: var(--text-primary);
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .app-subtitle {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Toggle Button Style */
+    #toggle-more-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    #toggle-more-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+    }
+
+    #toggle-more-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    .app-footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-sub);
+      font-size: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 20px;
+    }
+
+    /* Date Input Styling */
     input[type="date"] {
-      min-height: 45px;
-      /* Đảm bảo chiều cao khớp với select */
-      display: flex;
-      align-items: center;
+      position: relative;
     }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      background: transparent;
+      bottom: 0;
+      color: transparent;
+      cursor: pointer;
+      height: auto;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: auto;
+    }
+
+    /* Select Styling */
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+/* Alternative: Dùng sliding pill độc lập */
+.segmented-control {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  margin: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.sliding-pill {
+  position: absolute;
+  top: 6px;
+  left: 0;
+
+  width: calc(33.3333% - 12px);
+  height: calc(100% - 12px);
+
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+
+  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
+}
+
+
+
   </style>
 </head>
-
 
 <body>
 
   <div id="loading-screen">
     <div class="loader"></div>
-    <p style="color: var(--text-sub);">Baking fresh data…</p>
+    <p style="color: var(--text-sub); margin-top: 16px;">Baking fresh data…</p>
   </div>
 
   <div id="toast"></div>
 
   <div class="card">
-    <h3
-      style="color: var(--primary); text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-      Oops, I Spent Again...</h3>
-    <div class="nav-tabs">
-      <div class="nav-item active" onclick="switchView('input')">🤏 MIX</div>
-      <div class="nav-item" onclick="switchView('history')">🧁 TASTE</div>
-      <div class="nav-item" onclick="switchView('stats')">🍕 SLICE</div>
+    <div class="app-header">
+      <h3 class="app-title">Shareiz 🍪</h3>
+      <div class="app-subtitle">Oops, I Spent Again...</div>
     </div>
+
+<div class="segmented-control">
+  <div class="sliding-pill"></div>
+  <div class="segmented-item active" onclick="switchView('input')">🤏 MIX</div>
+  <div class="segmented-item" onclick="switchView('history')">🧁 TASTE</div>
+  <div class="segmented-item" onclick="switchView('stats')">🍕 SLICE</div>
+</div>
 
     <div class="content">
       <div id="view-input" class="view active">
-        <div class="field-group"><label>📅 Bake Day</label><input type="date" id="date"></div>
-        <div class="field-group"><label>💸 Cookie Dough (VND ×1K)</label><input type="number" id="amount"
-            placeholder="0"></div>
+        <div class="field-group">
+          <label>📅 Bake Day</label>
+          <input type="date" id="date">
+        </div>
+        <div class="field-group">
+          <label>💸 Cookie Dough (VND ×1K)</label>
+          <input type="number" id="amount" placeholder="0">
+        </div>
         <div class="field-group">
           <label>👩‍🍳 Chef</label>
-          <select id="payerSelect" style="width:100%; border-radius:8px;"></select>
+          <select id="payerSelect"></select>
         </div>
 
         <div class="field-group">
           <label>🙅 Tasters</label>
           <div id="split-box-main" class="split-box"></div>
           <div id="split-box-more" class="split-box" style="display:none;"></div>
-          <div id="toggle-more-btn" onclick="toggleMorePeople()"
-            style="color:var(--text-sub); font-size:12px; cursor:pointer;">+ Add Taster
+          <div id="toggle-more-btn" onclick="toggleMorePeople()">
+            + Add Taster
           </div>
         </div>
 
-        <div class="field-group"><label>Recipe Note</label>
-          <input id="note" type="text" placeholder="Cafe...">
+        <div class="field-group">
+          <label>Recipe Note</label>
+          <input id="note" type="text" placeholder="Cafe, Dinner, Groceries...">
         </div>
+        
         <button id="btnSave" onclick="save()">SERVE</button>
-
-        <p style="color:var(--text-sub); font-size:12px; margin-top: 20px; text-align: center;">
-          Made with 🍪 by Ozz <span id="app-version">v1.2</span>
-        </p>
       </div>
 
       <div id="view-history" class="view">
         <div id="history-list"></div>
       </div>
+      
       <div id="view-stats" class="view">
         <div id="myChart" style="height:300px;"></div>
       </div>
+    </div>
+
+    <div class="app-footer">
+      Made with 🍪 by Ozz • <span id="app-version">v1.3</span>
     </div>
   </div>
 
@@ -331,6 +498,7 @@
     google.charts.load('current', { 'packages': ['corechart'] });
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
     let cachedData = null;
+    
     async function loadInitialData() {
       const now = new Date();
       const dateInput = document.getElementById('date');
@@ -351,7 +519,6 @@
         renderForm(data.people);
         renderHistory();
         renderStats();
-
       } catch (error) {
         console.error("Error in loading init data:", error);
         document.getElementById('loading-screen').innerHTML = "<p>Error: Please refresh</p>";
@@ -374,7 +541,6 @@
       const moreBox = document.getElementById('split-box-more');
       const toggleBtn = document.getElementById('toggle-more-btn');
 
-      // Nếu đã có dữ liệu và số lượng người không đổi, không cần vẽ lại Payer/MainBox
       if (sel.options.length === people.length) return;
 
       sel.innerHTML = '';
@@ -382,27 +548,21 @@
       moreBox.innerHTML = '';
 
       people.forEach((person, index) => {
-        // 1. Vẫn thêm tất cả vào Dropdown người trả
         sel.innerHTML += `<option value="${person}">${person}</option>`;
 
-        // Tạo HTML cho checkbox
         const html = `
-                <div class="check-item">
-                    <input type="checkbox" id="cb${person}" value="${person}">
-                    <label for="cb${person}">${person}</label>
-                </div>`;
+          <div class="check-item">
+            <input type="checkbox" id="cb${person}" value="${person}">
+            <label for="cb${person}">${person}</label>
+          </div>`;
 
-        // 2. Chia người vào 2 nhóm
         if (index < 2) {
-          // Hiện 2 người đầu
           mainBox.innerHTML += html;
         } else {
-          // Ẩn từ người thứ 3
           moreBox.innerHTML += html;
         }
       });
 
-      // 3. Hiện nút "+" nếu danh sách có hơn 2 người
       if (people.length > 2) {
         toggleBtn.style.display = 'inline-block';
       }
@@ -415,60 +575,82 @@
       if (moreBox.style.display === 'none') {
         moreBox.style.display = 'flex';
         toggleBtn.innerText = '- Close Oven';
+        toggleBtn.style.background = 'rgba(255, 255, 255, 0.9)';
       } else {
         moreBox.style.display = 'none';
         toggleBtn.innerText = '+ Add Taster';
+        toggleBtn.style.background = 'rgba(255, 255, 255, 0.7)';
       }
     }
 
-    function switchView(view) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      document.getElementById('view-' + view).classList.add('active');
-      event.currentTarget.classList.add('active');
+    // function switchView(view) {
+    //   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    //   document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
+    //   document.getElementById('view-' + view).classList.add('active');
+    //   event.currentTarget.classList.add('active');
 
-      if (view === 'history') renderHistory();
-      if (view === 'stats') renderStats();
-    }
+    //   if (view === 'history') renderHistory();
+    //   if (view === 'stats') renderStats();
+    // }
 
     function renderHistory() {
       const list = document.getElementById('history-list');
-      list.innerHTML = ''; // QUAN TRỌNG: Xóa sạch danh sách cũ trước khi render lại
+      list.innerHTML = '';
 
       if (!cachedData || !cachedData.history || cachedData.history.length === 0) {
-        list.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No data this month</p>";
+        list.innerHTML = `
+          <div class="history-item" style="text-align: center; justify-content: center;">
+            <p style="color: #94a3b8; margin: 0;">No data this month</p>
+          </div>`;
         return;
       }
 
       list.innerHTML = cachedData.history.map(item => `
-      <div class="history-item">
-        <div>
-          <strong style="display:block; margin-bottom:2px;">${item.note || 'Expense'}</strong>
-          <small style="color:var(--text-sub)">${item.date} • by ${item.payer}</small>
+        <div class="history-item">
+          <div>
+            <strong style="display: block; margin-bottom: 4px; color: var(--text-primary);">
+              ${item.note || 'Expense'}
+            </strong>
+            <small style="color: var(--text-sub); font-size: 12px;">
+              ${item.date} • by ${item.payer}
+            </small>
+          </div>
+          <div style="color: var(--primary); font-weight: 800; font-size: 18px;">
+            ${item.amount}k
+          </div>
         </div>
-        <div style="color:var(--primary); font-weight:800; font-size:1.1rem;">${item.amount}k</div>
-      </div>
-    `).join('');
+      `).join('');
     }
 
     function renderStats() {
-      const stats = cachedData.stats;
-      const dataArray = [['Person', 'Total']];
-      for (let p in stats) {
-        dataArray.push([p, stats[p]]);
+      google.charts.setOnLoadCallback(drawChart);
+      
+      function drawChart() {
+        const stats = cachedData.stats;
+        const dataArray = [['Person', 'Total']];
+        
+        for (let p in stats) {
+          dataArray.push([p, stats[p]]);
+        }
+        
+        const data = google.visualization.arrayToDataTable(dataArray);
+        const options = {
+          title: 'Expense Distribution',
+          pieHole: 0.4,
+          colors: ['#FFDD00', '#8BAE66', '#FA6868', '#90AB8B', '#EBF4DD', '#B45309'],
+          backgroundColor: 'transparent',
+          chartArea: {
+            width: '90%',
+            height: '80%'
+          }
+        };
+        
+        const chart = new google.visualization.PieChart(document.getElementById('myChart'));
+        chart.draw(data, options);
       }
-      const data = google.visualization.arrayToDataTable(dataArray);
-      const options = {
-        title: 'Expense Distribution',
-        pieHole: 0.2,
-        colors: ['#8BAE66', '#FA6868', '#90AB8B', '#EBF4DD', '#B45309', '#92400E'],
-      };
-      const chart = new google.visualization.PieChart(document.getElementById('myChart'))
-      chart.draw(data, options);
     }
 
     async function save() {
-
       const btn = document.getElementById('btnSave');
       const amountInput = document.getElementById('amount');
       const noteInput = document.getElementById('note');
@@ -494,30 +676,59 @@
       btn.disabled = true;
       btn.innerText = "⏳ SERVING...";
 
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(payload)
-      });
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(payload)
+        });
 
-      setTimeout(() => {
-        loadInitialData();
-        showNotification("Sweet Success!");
-        amountInput.value = "";
-        noteInput.value = "";
+        setTimeout(() => {
+          loadInitialData();
+          showNotification("Sweet Success! Expense added.");
+          amountInput.value = "";
+          noteInput.value = "";
+          btn.disabled = false;
+          btn.innerText = "SERVE";
+        }, 1500);
+      } catch (error) {
+        showNotification("Oops! Something went wrong", "error");
         btn.disabled = false;
         btn.innerText = "SERVE";
-      }, 2000);
+      }
     }
 
-    function resetInputForm() {
-      document.getElementById('amount').value = '';
-      document.getElementById('note').value = '';
-      const checkboxes = document.querySelectorAll('.split-box input[type="checkbox"]');
-      checkboxes.forEach(cb => cb.checked = false);
-    }
+function switchView(view) {
+  document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+
+  movePillToActive();
+
+  if (view === 'history') renderHistory();
+  if (view === 'stats') renderStats();
+}
+
+
+function movePillToActive() {
+  const pill = document.querySelector('.sliding-pill');
+  const activeItem = document.querySelector('.segmented-item.active');
+
+  if (!pill || !activeItem) return;
+
+  const container = activeItem.parentElement;
+  const itemRect = activeItem.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  const offsetX = itemRect.left - containerRect.left;
+  pill.style.transform = `translateX(${offsetX}px)`;
+}
+
 
     window.onload = loadInitialData;
+    setTimeout(movePillToActive, 0);
   </script>
 
 </body>
