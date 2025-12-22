@@ -4,272 +4,283 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-  <title>Sharei 🍪</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <title>Shareiz🍪</title>
   <style>
     :root {
-        --primary: #FFDD00;
-        --primary-light: #FBE87F;
-        --bg: #f1f5f9;
-        --text-sub: #64748b;
-        --border: #e2e8f0;
+      --primary: #FFDD00;
+      --primary-light: #FBE87F;
+      --bg: #f1f5f9;
+      --text-sub: #64748b;
+      --border: #e2e8f0;
     }
 
     body {
-        font-family: sans-serif;
-        background: var(--bg);
-        margin: 0;
-        flex-direction: column; /* Xếp các phần tử theo chiều dọc */
-        align-items: center;    /* Căn giữa tất cả theo chiều ngang */
-        min-height: 100vh;
+      font-family: sans-serif;
+      background: var(--bg);
+      margin: 0;
+      flex-direction: column;
+      /* Xếp các phần tử theo chiều dọc */
+      align-items: center;
+      /* Căn giữa tất cả theo chiều ngang */
+      min-height: 100vh;
     }
 
     .card {
-        background: white;
-        width: 100%;
-        max-width: 500px;
-        margin: 0 auto;
-        min-height: 100vh; /* Dự phòng cho trình duyệt khác */
-        min-height: -webkit-fill-available; /* Tối ưu cho Safari iOS */
-        display: flex;
-        flex-direction: column;
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      min-height: 100vh;
+      /* Dự phòng cho trình duyệt khác */
+      min-height: -webkit-fill-available;
+      /* Tối ưu cho Safari iOS */
+      display: flex;
+      flex-direction: column;
     }
 
     /* Loading Screen */
     #loading-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
     }
 
     .loader {
-        width: 50px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        background:
-            radial-gradient(farthest-side, #FFDD00 94%, #0000) top/8px 8px no-repeat,
-            conic-gradient(#0000 30%, #FFDD00);
-        -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
-        animation: l13 1s infinite linear;
+      width: 50px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background:
+        radial-gradient(farthest-side, #FFDD00 94%, #0000) top/8px 8px no-repeat,
+        conic-gradient(#0000 30%, #FFDD00);
+      -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+      animation: l13 1s infinite linear;
     }
 
     @keyframes l13 {
-        100% {
-            transform: rotate(1turn)
-        }
+      100% {
+        transform: rotate(1turn)
+      }
     }
 
     /* Tabs */
     .nav-tabs {
-        display: flex;
-        background: white;
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
+      display: flex;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
     }
 
     .nav-item {
-        flex: 1;
-        text-align: center;
-        padding: 15px 0;
-        font-size: 13px;
-        font-weight: bold;
-        color: var(--text-sub);
-        cursor: pointer;
+      flex: 1;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text-sub);
+      cursor: pointer;
     }
 
     .nav-item.active {
-        color: var(--primary);
-        border-bottom: 3px solid var(--primary);
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
     }
 
     .content {
-        padding: 20px 20px 5px 20px;
+      padding: 20px 20px 5px 20px;
     }
 
     .view {
-        display: none;
+      display: none;
     }
 
     .view.active {
-        display: block;
+      display: block;
     }
 
     /* Form Styles */
     .field-group {
-        margin-bottom: 15px;
+      margin-bottom: 15px;
     }
 
     label {
-        display: block;
-        font-size: 14px;
-        font-weight: bold;
-        color: var(--text-sub);
-        margin-bottom: 10px;
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-sub);
+      margin-bottom: 10px;
     }
 
     input {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-sizing: border-box;
     }
 
     .split-box {
-        display: flex;
-        gap: 8px;
+      display: flex;
+      gap: 8px;
     }
 
     .check-item {
-        flex: 1;
+      flex: 1;
     }
 
     .check-item input {
-        display: none;
+      display: none;
     }
 
     .check-item label {
-        display: block;
-        padding: 10px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        text-align: center;
-        font-weight: bold;
+      display: block;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
     }
 
     .check-item input:checked+label {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
     #btnSave {
-        width: 100%;
-        padding: 15px;
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
+      width: 100%;
+      padding: 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     #toast {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #333;
-        color: white;
-        padding: 8px;
-        border-radius: 5px;
-        opacity: 0;
-        transition: 0.3s;
-        pointer-events: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 8px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: 0.3s;
+      pointer-events: none;
     }
 
     #toggle-more-btn {
-        display: inline-block;
-        padding: 5px 10px;
-        background: var(--primary-light);
-        border-radius: 7px;
-        transition: 0.3s;
+      display: inline-block;
+      padding: 5px 10px;
+      background: var(--primary-light);
+      border-radius: 7px;
+      transition: 0.3s;
     }
 
     #toggle-more-btn:active {
-        transform: scale(0.95);
+      transform: scale(0.95);
     }
 
     /* Cập nhật CSS Toast để đảm bảo luôn nổi bật ở góc phải */
     #toast {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: gainsboro;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        z-index: 10000;
-        /* Đảm bảo cao hơn tất cả */
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform: translateX(150%);
-        opacity: 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: gainsboro;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 10000;
+      /* Đảm bảo cao hơn tất cả */
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateX(150%);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     #toast.show {
-        transform: translateX(0);
-        opacity: 1;
+      transform: translateX(0);
+      opacity: 1;
     }
 
     .toast-success {
-        border-right: 5px solid #10b981;
+      border-right: 5px solid #10b981;
     }
 
     .toast-error {
-        border-right: 5px solid #ef4444;
+      border-right: 5px solid #ef4444;
     }
 
     /* Style cho item history để không bị dính vào nhau */
     .history-item {
-        padding: 15px;
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     /* 1. Đảm bảo tất cả các ô có cùng cách tính kích thước */
-    input[type="text"], 
-    input[type="number"], 
-    input[type="date"], 
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
     select {
-    width: 100%;             /* Chiếm hết chiều ngang của container */
-    box-sizing: border-box;  /* QUAN TRỌNG: Tính cả padding vào trong width */
-    height: 45px;            /* Ép cùng một độ cao cho tất cả */
-    padding: 5px 10px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background-color: white;
-    appearance: none;        /* Xóa bỏ định dạng mặc định của hệ điều hành */
-    -webkit-appearance: none;
-    font-size: 16px !important;
+      width: 100%;
+      /* Chiếm hết chiều ngang của container */
+      box-sizing: border-box;
+      /* QUAN TRỌNG: Tính cả padding vào trong width */
+      /* height: 45px; */
+      /* Ép cùng một độ cao cho tất cả */
+      padding: 10px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background-color: white;
+      appearance: none;
+      /* Xóa bỏ định dạng mặc định của hệ điều hành */
+      -webkit-appearance: none;
+      font-size: 16px !important;
     }
 
     /* 2. Riêng với input date trên iOS thường bị dư lề */
     input[type="date"] {
-    min-height: 45px;        /* Đảm bảo chiều cao khớp với select */
-    display: flex;
-    align-items: center;
+      min-height: 45px;
+      /* Đảm bảo chiều cao khớp với select */
+      display: flex;
+      align-items: center;
     }
-</style>
-
+  </style>
 </head>
+
 
 <body>
 
   <div id="loading-screen">
     <div class="loader"></div>
-    <p>Baking fresh data…</p>
+    <p style="color: var(--text-sub);">Baking fresh data…</p>
   </div>
 
   <div id="toast"></div>
 
   <div class="card">
+    <h3 style="color: var(--primary); text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Oops, I Spent Again...</h3>
     <div class="nav-tabs">
       <div class="nav-item active" onclick="switchView('input')">🤏 MIX</div>
       <div class="nav-item" onclick="switchView('history')">🧁 TASTE</div>
@@ -314,207 +325,205 @@
     </div>
   </div>
 
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
-  async function loadInitialData() {
-  try {
-    // 1. Gọi điện cho Google
-    const response = await fetch(SCRIPT_URL);
-    console.log("Response:", response);
-    if (!response.ok) {
-      throw new Error("Network response was not ok " + response.statusText);
+  <script>
+    google.charts.load('current', { 'packages': ['corechart'] });
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
+    let cachedData = null;
+    async function loadInitialData() {
+      // --- BƯỚC 1: THIẾT LẬP MẶC ĐỊNH (CHẠY NGAY TỨC KHẮC) ---
+      const now = new Date();
+      const dateInput = document.getElementById('date');
+      if (dateInput) dateInput.valueAsDate = now;
+
+      const defaultPeople = ["Bon", "Chin"];
+      renderForm(defaultPeople);
+
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) loadingScreen.style.display = 'none';
+      }, 1000);
+
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+        cachedData = data;
+        renderForm(data.people);
+        renderHistory();
+        console.log("Initial data loaded:", cachedData);
+        renderStats();
+
+      } catch (error) {
+        console.error("Error in loading init data:", error);
+        document.getElementById('loading-screen').innerHTML = "<p>Error: Please refresh</p>";
+      }
     }
-    // 2. Nhận gói dữ liệu JSON
-    const data = await response.json();
-    
-    // 3. Đổ dữ liệu vào giao diện (Giống hệt cách bạn làm lúc trước)
-    // Ví dụ: hiển thị danh sách người, lịch sử...
-    // renderPeople(data.people);
-    // renderHistory(data.history);
 
-    // 4. Ẩn màn hình Loading
-    document.getElementById('loading-screen').style.display = 'none';
-  } catch (error) {
-    console.error("Lỗi:", error);
-    alert("Không lấy được dữ liệu rồi Ozz ơi!");
-  }
-}  
+    // Hàm hiển thị thông báo mới
+    function showNotification(message, type = 'success') {
+      const t = document.getElementById('toast');
+      t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + message;
+      t.className = 'show ' + (type === 'success' ? 'toast-success' : 'toast-error');
+
+      setTimeout(() => {
+        t.className = '';
+      }, 2500);
+    }
+
+    function renderForm(people) {
+      const sel = document.getElementById('payerSelect');
+      const mainBox = document.getElementById('split-box-main');
+      const moreBox = document.getElementById('split-box-more');
+      const toggleBtn = document.getElementById('toggle-more-btn');
+
+      // Nếu đã có dữ liệu và số lượng người không đổi, không cần vẽ lại Payer/MainBox
+      if (sel.options.length === people.length) return;
+
+      sel.innerHTML = '';
+      mainBox.innerHTML = '';
+      moreBox.innerHTML = '';
+
+      people.forEach((person, index) => {
+        // 1. Vẫn thêm tất cả vào Dropdown người trả
+        sel.innerHTML += `<option value="${person}">${person}</option>`;
+
+        // Tạo HTML cho checkbox
+        const html = `
+                <div class="check-item">
+                    <input type="checkbox" id="cb${person}" value="${person}">
+                    <label for="cb${person}">${person}</label>
+                </div>`;
+
+        // 2. Chia người vào 2 nhóm
+        if (index < 2) {
+          // Hiện 2 người đầu
+          mainBox.innerHTML += html;
+        } else {
+          // Ẩn từ người thứ 3
+          moreBox.innerHTML += html;
+        }
+      });
+
+      // 3. Hiện nút "+" nếu danh sách có hơn 2 người
+      if (people.length > 2) {
+        toggleBtn.style.display = 'inline-block';
+      }
+    }
+
+    // Hàm xử lý khi bấm vào nút "Thêm người"
+    function toggleMorePeople() {
+      const moreBox = document.getElementById('split-box-more');
+      const toggleBtn = document.getElementById('toggle-more-btn');
+
+      if (moreBox.style.display === 'none') {
+        moreBox.style.display = 'flex';
+        toggleBtn.innerText = '- Close Oven';
+      } else {
+        moreBox.style.display = 'none';
+        toggleBtn.innerText = '+ Add Taster';
+      }
+    }
+
+    function switchView(view) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+      if (view === 'history') renderHistory();
+      if (view === 'stats') renderStats();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('history-list');
+      list.innerHTML = ''; // QUAN TRỌNG: Xóa sạch danh sách cũ trước khi render lại
+
+      if (!cachedData || !cachedData.history || cachedData.history.length === 0) {
+        list.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No data this month</p>";
+        return;
+      }
+
+      list.innerHTML = cachedData.history.map(item => `
+      <div class="history-item">
+        <div>
+          <strong style="display:block; margin-bottom:2px;">${item.note || 'Expense'}</strong>
+          <small style="color:var(--text-sub)">${item.date} • by ${item.payer}</small>
+        </div>
+        <div style="color:var(--primary); font-weight:800; font-size:1.1rem;">${item.amount}k</div>
+      </div>
+    `).join('');
+    }
+
+    function renderStats() {
+      const stats = cachedData.stats;
+      const dataArray = [['Person', 'Total']];
+      for (let p in stats) {
+        dataArray.push([p, stats[p]]);
+      }
+      const data = google.visualization.arrayToDataTable(dataArray);
+      const options = {
+        title: 'Expense Distribution',
+        pieHole: 0.2,
+        colors: ['#8BAE66', '#FA6868', '#90AB8B', '#EBF4DD', '#B45309', '#92400E'],
+      };
+      const chart = new google.visualization.PieChart(document.getElementById('myChart'))
+      chart.draw(data, options);
+    }
+
+    async function save() {
+
+      const btn = document.getElementById('btnSave');
+      const amountInput = document.getElementById('amount');
+      const noteInput = document.getElementById('note');
+
+      const payload = {
+        date: document.getElementById('date').value,
+        amount: amountInput.value,
+        payer: document.getElementById('payerSelect').value,
+        sharedWith: [...document.querySelectorAll('.split-box input:checked')].map(cb => cb.value),
+        note: noteInput.value
+      };
+
+      if (!payload.amount || payload.amount <= 0) {
+        showNotification("Please enter amount", "error");
+        return;
+      }
+
+      if (!payload.sharedWith || payload.sharedWith.length <= 0) {
+        showNotification("Please select at least one taster", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "⏳ SERVING...";
+      document.getElementById('loading-screen').style.display = 'flex';
+
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // Để không bị Google chặn
+        body: JSON.stringify(payload)
+      });
+      // 4. Vì dùng 'no-cors' nên mình không đợi câu trả lời từ Google được
+      // Mình cứ đợi 2 giây rồi nạp lại dữ liệu cho chắc chắn
+      setTimeout(() => {
+        loadInitialData(); // Nạp lại bảng để thấy dòng mới vừa lưu
+        showNotification("Sweet Success!");
+        amountInput.value = "";
+        noteInput.value = "";
+        btn.disabled = false;
+        btn.innerText = "SERVE";
+      }, 2000);
+
+    }
+function resetInputForm() {
   
-  
-  // let cachedData = null;
+      document.getElementById('amount').value = '';
+      document.getElementById('note').value = '';
+      const checkboxes = document.querySelectorAll('.split-box input[type="checkbox"]');
+      checkboxes.forEach(cb => cb.checked = false);
+    }
 
-    // // Hàm hiển thị thông báo mới
-    // function showNotification(message, type = 'success') {
-    //     const t = document.getElementById('toast');
-    //     t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + message;
-    //     t.className = 'show ' + (type === 'success' ? 'toast-success' : 'toast-error');
-
-    //     setTimeout(() => {
-    //         t.className = '';
-    //     }, 2500);
-    // }
-
-    // window.onload = () => {
-    //     const now = new Date();
-
-    //     document.getElementById('date').valueAsDate = now;
-    //     const defaultPeople = ["Bon", "Chin"];
-    //     renderForm(defaultPeople);
-    //     document.getElementById('loading-screen').style.display = 'none';
-        
-    //     google.script.run
-    //         .withSuccessHandler(data => {
-    //             cachedData = data;
-    //             renderForm(data.people);
-    //         })
-    //         .withFailureHandler(err => {
-    //             showNotification("Connection error!", "error");
-    //             document.getElementById('loading-screen').innerHTML = "<p>Error: Please refresh</p>";
-    //         })
-    //         .getInitialData();
-    // };
-
-    // function renderForm(people) {
-    //     const sel = document.getElementById('payerSelect');
-    //     const mainBox = document.getElementById('split-box-main');
-    //     const moreBox = document.getElementById('split-box-more');
-    //     const toggleBtn = document.getElementById('toggle-more-btn');
-
-    //     // Nếu đã có dữ liệu và số lượng người không đổi, không cần vẽ lại Payer/MainBox
-    //     if (sel.options.length === people.length) return;
-
-    //     sel.innerHTML = '';
-    //     mainBox.innerHTML = '';
-    //     moreBox.innerHTML = '';
-
-    //     people.forEach((person, index) => {
-    //         // 1. Vẫn thêm tất cả vào Dropdown người trả
-    //         sel.innerHTML += `<option value="${person}">${person}</option>`;
-
-    //         // Tạo HTML cho checkbox
-    //         const html = `
-    //             <div class="check-item">
-    //                 <input type="checkbox" id="cb${person}" value="${person}">
-    //                 <label for="cb${person}">${person}</label>
-    //             </div>`;
-
-    //         // 2. Chia người vào 2 nhóm
-    //         if (index < 2) {
-    //             // Hiện 2 người đầu
-    //             mainBox.innerHTML += html;
-    //         } else {
-    //             // Ẩn từ người thứ 3
-    //             moreBox.innerHTML += html;
-    //         }
-    //     });
-
-    //     // 3. Hiện nút "+" nếu danh sách có hơn 2 người
-    //     if (people.length > 2) {
-    //         toggleBtn.style.display = 'inline-block';
-    //     }
-    // }
-
-    // // Hàm xử lý khi bấm vào nút "Thêm người"
-    // function toggleMorePeople() {
-    //     const moreBox = document.getElementById('split-box-more');
-    //     const toggleBtn = document.getElementById('toggle-more-btn');
-
-    //     if (moreBox.style.display === 'none') {
-    //         moreBox.style.display = 'flex';
-    //         toggleBtn.innerText = '- Close Oven';
-    //     } else {
-    //         moreBox.style.display = 'none';
-    //         toggleBtn.innerText = '+ Add Taster';
-    //     }
-    // }
-
-    // function switchView(view) {
-    //     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    //     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    //     document.getElementById('view-' + view).classList.add('active');
-    //     event.currentTarget.classList.add('active');
-
-    //     if (view === 'history') renderHistory();
-    //     if (view === 'stats') renderStats();
-    // }
-
-    // function renderHistory() {
-    //     const list = document.getElementById('history-list');
-    //     list.innerHTML = ''; // QUAN TRỌNG: Xóa sạch danh sách cũ trước khi render lại
-
-    //     if (!cachedData || !cachedData.history || cachedData.history.length === 0) {
-    //         list.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No data this month</p>";
-    //         return;
-    //     }
-
-    //     list.innerHTML = cachedData.history.map(item => `
-    //   <div class="history-item">
-    //     <div>
-    //       <strong style="display:block; margin-bottom:2px;">${item.note || 'Expense'}</strong>
-    //       <small style="color:var(--text-sub)">${item.date} • by ${item.payer}</small>
-    //     </div>
-    //     <div style="color:var(--primary); font-weight:800; font-size:1.1rem;">${item.amount}k</div>
-    //   </div>
-    // `).join('');
-    // }
-
-    // google.charts.load('current', { 'packages': ['corechart'] });
-    // function renderStats() {
-    //     const stats = cachedData.stats;
-    //     const dataArray = [['Person', 'Total']];
-    //     for (let p in stats) dataArray.push([p, stats[p]]);
-    //     const data = google.visualization.arrayToDataTable(dataArray);
-    //     new google.visualization.PieChart(document.getElementById('myChart')).draw(data, { pieHole: 0.4, chartArea: { width: '100%', height: '80%' } });
-    // }
-
-    // function save() {
-    //     const btn = document.getElementById('btnSave');
-    //     const amountInput = document.getElementById('amount');
-    //     const noteInput = document.getElementById('note');
-
-    //     const payload = {
-    //         date: document.getElementById('date').value,
-    //         amount: amountInput.value,
-    //         payer: document.getElementById('payerSelect').value,
-    //         sharedWith: [...document.querySelectorAll('.split-box input:checked')].map(cb => cb.value),
-    //         note: noteInput.value
-    //     };
-
-    //     if (!payload.amount || payload.amount <= 0) {
-    //         showNotification("Please enter amount", "error");
-    //         return;
-    //     }
-
-    //     if (!payload.sharedWith || payload.sharedWith.length <= 0) {
-    //         showNotification("Please select at least one taster", "error");
-    //         return;
-    //     }
-
-    //     btn.disabled = true;
-    //     btn.innerText = "⏳ SERVING...";
-
-    //     google.script.run
-    //         .withSuccessHandler(() => {
-    //             showNotification("Sweet Success!");
-    //             amountInput.value = "";
-    //             noteInput.value = "";
-    //             btn.disabled = false;
-    //             btn.innerText = "SERVE";
-
-    //             // Cập nhật dữ liệu ngầm để các Tab History/Stats luôn mới
-    //             google.script.run.withSuccessHandler(data => {
-    //                 cachedData = data;
-    //             }).getInitialData();
-    //         })
-    //         .withFailureHandler(err => {
-    //             showNotification("Oven Error!" + err, "error");
-    //             btn.disabled = false;
-    //             btn.innerText = "SERVE";
-    //         })
-    //         .saveExpense(payload);
-    // }
     window.onload = loadInitialData;
-</script>
+  </script>
 
   <!-- <?!= include('javascript'); ?> -->
 </body>
