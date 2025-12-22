@@ -280,7 +280,9 @@
   <div id="toast"></div>
 
   <div class="card">
-    <h3 style="color: var(--primary); text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Oops, I Spent Again...</h3>
+    <h3
+      style="color: var(--primary); text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      Oops, I Spent Again...</h3>
     <div class="nav-tabs">
       <div class="nav-item active" onclick="switchView('input')">🤏 MIX</div>
       <div class="nav-item" onclick="switchView('history')">🧁 TASTE</div>
@@ -330,7 +332,6 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
     let cachedData = null;
     async function loadInitialData() {
-      // --- BƯỚC 1: THIẾT LẬP MẶC ĐỊNH (CHẠY NGAY TỨC KHẮC) ---
       const now = new Date();
       const dateInput = document.getElementById('date');
       if (dateInput) dateInput.valueAsDate = now;
@@ -349,7 +350,6 @@
         cachedData = data;
         renderForm(data.people);
         renderHistory();
-        console.log("Initial data loaded:", cachedData);
         renderStats();
 
       } catch (error) {
@@ -358,7 +358,6 @@
       }
     }
 
-    // Hàm hiển thị thông báo mới
     function showNotification(message, type = 'success') {
       const t = document.getElementById('toast');
       t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + message;
@@ -409,7 +408,6 @@
       }
     }
 
-    // Hàm xử lý khi bấm vào nút "Thêm người"
     function toggleMorePeople() {
       const moreBox = document.getElementById('split-box-more');
       const toggleBtn = document.getElementById('toggle-more-btn');
@@ -495,27 +493,24 @@
 
       btn.disabled = true;
       btn.innerText = "⏳ SERVING...";
-      document.getElementById('loading-screen').style.display = 'flex';
 
       await fetch(SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors", // Để không bị Google chặn
+        mode: "no-cors",
         body: JSON.stringify(payload)
       });
-      // 4. Vì dùng 'no-cors' nên mình không đợi câu trả lời từ Google được
-      // Mình cứ đợi 2 giây rồi nạp lại dữ liệu cho chắc chắn
+
       setTimeout(() => {
-        loadInitialData(); // Nạp lại bảng để thấy dòng mới vừa lưu
+        loadInitialData();
         showNotification("Sweet Success!");
         amountInput.value = "";
         noteInput.value = "";
         btn.disabled = false;
         btn.innerText = "SERVE";
       }, 2000);
-
     }
-function resetInputForm() {
-  
+
+    function resetInputForm() {
       document.getElementById('amount').value = '';
       document.getElementById('note').value = '';
       const checkboxes = document.querySelectorAll('.split-box input[type="checkbox"]');
@@ -525,7 +520,6 @@ function resetInputForm() {
     window.onload = loadInitialData;
   </script>
 
-  <!-- <?!= include('javascript'); ?> -->
 </body>
 
 </html>
