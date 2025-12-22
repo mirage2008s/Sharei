@@ -20,8 +20,11 @@
         background: white;
         width: 100%;
         max-width: 500px;
-        min-height: 100vh;
-        position: relative;
+        margin: 0 auto;
+        min-height: 100vh; /* Dự phòng cho trình duyệt khác */
+        min-height: -webkit-fill-available; /* Tối ưu cho Safari iOS */
+        display: flex;
+        flex-direction: column;
     }
 
     /* Loading Screen */
@@ -81,7 +84,7 @@
     }
 
     .content {
-        padding: 20px;
+        padding: 20px 20px 5px 20px;
     }
 
     .view {
@@ -221,5 +224,29 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    /* 1. Đảm bảo tất cả các ô có cùng cách tính kích thước */
+    input[type="text"], 
+    input[type="number"], 
+    input[type="date"], 
+    select {
+    width: 100%;             /* Chiếm hết chiều ngang của container */
+    box-sizing: border-box;  /* QUAN TRỌNG: Tính cả padding vào trong width */
+    height: 45px;            /* Ép cùng một độ cao cho tất cả */
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: white;
+    appearance: none;        /* Xóa bỏ định dạng mặc định của hệ điều hành */
+    -webkit-appearance: none;
+    font-size: 16px !important;
+    }
+
+    /* 2. Riêng với input date trên iOS thường bị dư lề */
+    input[type="date"] {
+    min-height: 45px;        /* Đảm bảo chiều cao khớp với select */
+    display: flex;
+    align-items: center;
     }
 </style>

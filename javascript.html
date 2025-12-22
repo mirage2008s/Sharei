@@ -14,19 +14,12 @@
 
     window.onload = () => {
         const now = new Date();
-          // build string HH:MM.dd.MM
-        const hh = String(now.getHours()).padStart(2, '0');
-        const mm = String(now.getMinutes()).padStart(2, '0');
-        const dd = String(now.getDate()).padStart(2, '0');
-        const MM = String(now.getMonth() + 1).padStart(2, '0');
-
-        const buildDate = `${hh}:${mm}.${dd}.${MM}`;
 
         document.getElementById('date').valueAsDate = now;
         const defaultPeople = ["Bon", "Chin"];
         renderForm(defaultPeople);
         document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('app-version').innerText = 'v' + buildDate;
+        
         google.script.run
             .withSuccessHandler(data => {
                 cachedData = data;
