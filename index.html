@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap" rel="stylesheet">
+  <!-- cdn ggicon -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <title>Shareiz🍪</title>
   <style>
     :root {
@@ -169,6 +172,37 @@
       letter-spacing: 0.5px;
     }
 
+    /* Container bao quanh input và icon */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 300,
+        'GRAD' 0,
+        'opsz' 24
+    }
+
+
+    /* Định vị icon */
+    .icon-right {
+      position: absolute;
+      right: 12px;
+      color: var(--text-sub);
+      pointer-events: none;
+      /* Để khi click vào icon thì vẫn focus vào input */
+    }
+
+    /* Riêng cho input type="date", ẩn icon lịch mặc định của trình duyệt để dùng Google Icon cho đẹp */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+      cursor: pointer;
+    }
+
     input,
     select {
       width: 100%;
@@ -227,12 +261,12 @@
 
     #btnSave {
       width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #FFDD00, #FFCC00);
-      color: white;
+      padding: 10px;
+      background: var(--primary);
+      color: var(--text-sub);
       border: none;
       border-radius: 16px;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
@@ -294,7 +328,7 @@
 
     /* History Items với Glassmorphism */
     .history-item {
-      padding: 18px;
+      padding: 5px 15px;
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -345,9 +379,10 @@
       font-weight: 500;
     }
 
-    /* Toggle Button Style */
+    /* Toggle Button Style
     #toggle-more-btn {
-      display: inline-block;
+      display: flex;
+      position: relative;
       padding: 10px 16px;
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(5px);
@@ -370,6 +405,38 @@
 
     #toggle-more-btn:active {
       transform: translateY(0);
+    } */
+
+    .expand-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+
+      /* border: 1px solid rgba(255, 255, 255, 0.3); */
+      border-radius: 14px;
+
+      /* font-size: 13px;
+  font-weight: 600; */
+      color: var(--text-sub);
+
+      /* cursor: pointer;
+  user-select: none; */
+
+      /* transition: background 0.3s ease, box-shadow 0.3s ease; */
+    }
+
+    .expand-arrow {
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Expanded state */
+    .expand-btn.expanded .expand-arrow {
+      transform: rotate(180deg);
     }
 
     /* Footer */
@@ -404,11 +471,6 @@
     select {
       appearance: none;
       -webkit-appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      background-size: 16px;
-      padding-right: 40px;
     }
 
     .sliding-pill {
@@ -454,30 +516,47 @@
     <div class="content">
       <div id="view-input" class="view active">
         <div class="field-group">
-          <label>📅 Bake Day</label>
-          <input type="date" id="date">
-        </div>
-        <div class="field-group">
-          <label>💸 Cookie Dough (VND ×1K)</label>
-          <input type="number" id="amount" placeholder="0">
-        </div>
-        <div class="field-group">
-          <label>👩‍🍳 Chef</label>
-          <select id="payerSelect"></select>
+          <label>Bake Day</label>
+          <div class="input-wrapper">
+            <input type="date" id="date">
+            <span class="material-symbols-outlined icon-right">calendar_month</span>
+          </div>
         </div>
 
         <div class="field-group">
-          <label>🙅 Tasters</label>
+          <label>Cookie Dough (VND)</label>
+          <div class="input-wrapper">
+            <input type="number" id="amount" placeholder="0đ">
+            <span class="material-symbols-outlined icon-right">1k</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Chef</label>
+          <div class="input-wrapper">
+            <select id="payerSelect"></select>
+            <span class="material-symbols-outlined icon-right">person</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Tasters</label>
           <div id="split-box-main" class="split-box"></div>
           <div id="split-box-more" class="split-box" style="display:none;"></div>
-          <div id="toggle-more-btn" onclick="toggleMorePeople()">
-            + Add Taster
+          <div id="toggle-more-btn" class="expand-btn" onclick="toggleMorePeople()">
+            <svg class="expand-arrow" width="16" height="16" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </div>
         </div>
 
         <div class="field-group">
           <label>Recipe Note</label>
-          <input id="note" type="text" placeholder="Cafe, Dinner, Groceries...">
+          <div class="input-wrapper">
+            <input id="note" type="text" placeholder="Cafe, Dinner, Groceries...">
+            <span class="material-symbols-outlined icon-right">stylus_note</span>
+          </div>
         </div>
 
         <button id="btnSave" onclick="save()">SERVE</button>
@@ -567,22 +646,23 @@
       });
 
       if (people.length > 2) {
-        toggleBtn.style.display = 'inline-block';
+        toggleBtn.style.display = 'flex';
       }
     }
 
     function toggleMorePeople() {
       const moreBox = document.getElementById('split-box-more');
-      const toggleBtn = document.getElementById('toggle-more-btn');
+      const btn = document.getElementById('toggle-more-btn');
+      const text = btn.querySelector('.expand-text');
 
-      if (moreBox.style.display === 'none') {
+      const isOpen = btn.classList.contains('expanded');
+
+      if (!isOpen) {
         moreBox.style.display = 'flex';
-        toggleBtn.innerText = '- Close Oven';
-        toggleBtn.style.background = 'rgba(255, 255, 255, 0.9)';
+        btn.classList.add('expanded');
       } else {
         moreBox.style.display = 'none';
-        toggleBtn.innerText = '+ Add Taster';
-        toggleBtn.style.background = 'rgba(255, 255, 255, 0.7)';
+        btn.classList.remove('expanded');
       }
     }
 
@@ -611,15 +691,15 @@
       list.innerHTML = cachedData.history.map(item => `
         <div class="history-item">
           <div>
-            <strong style="display: block; margin-bottom: 4px; color: var(--text-primary);">
+            <strong style="display: block; margin-bottom: 2px; color: var(--text-primary);">
               ${item.note || 'Expense'}
             </strong>
             <small style="color: var(--text-sub); font-size: 12px;">
               ${item.date} • by ${item.payer}
             </small>
           </div>
-          <div style="color: var(--primary); font-weight: 800; font-size: 18px;">
-            ${item.amount}k
+          <div style="color: var(--text-primary); font-weight: 600; font-size: 18px;">
+            ${item.amount}K
           </div>
         </div>
       `).join('');
@@ -644,7 +724,7 @@
           backgroundColor: 'transparent',
           chartArea: {
             width: '90%',
-            height: '80%'
+            height: '90%'
           }
         };
 
