@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap" rel="stylesheet">
   <title>Shareiz🍪</title>
   <style>
     :root {
@@ -18,8 +21,13 @@
       --blur-bg: blur(10px);
     }
 
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Reddit Mono', sans-serif;
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       flex-direction: column;
@@ -78,14 +86,14 @@
     /* Segmented Control Tabs */
     .segmented-control {
       display: flex;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 4px;
+      background: rgb(50 50 50 / 5%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 25px;
       margin: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      position: relative;
     }
 
     .segmented-item {
@@ -100,17 +108,29 @@
       transition: all 0.3s ease;
       margin: 0 2px;
       position: relative;
-  z-index: 2;
+      z-index: 2;
+      outline: none;
+      user-select: none;
+    }
+
+    .segmented-item:focus {
+      outline: none;
     }
 
     .segmented-item.active {
-  background: transparent;
-  color: var(--text-primary);
-}
+      background: transparent;
+      color: var(--text-primary);
+    }
 
 
     .content {
-      padding: 0 20px 20px 20px;
+      padding: 20px;
+      background: rgb(50 50 50 / 5%);
+      border-radius: 25px;
+      margin: 0px 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
+      position: relative;
     }
 
     .view {
@@ -119,8 +139,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .view.active {
@@ -142,21 +169,20 @@
       letter-spacing: 0.5px;
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 15px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 5px 15px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
       box-sizing: border-box;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05)
     }
 
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       outline: none;
       border-color: var(--primary);
       background: rgba(255, 255, 255, 0.9);
@@ -180,11 +206,10 @@
 
     .check-item label {
       display: block;
-      padding: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 5px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 14px;
       text-align: center;
-      font-weight: 600;
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
@@ -306,8 +331,8 @@
     }
 
     .app-title {
-      color: var(--text-primary);
-      font-size: 28px;
+      color: var(--primary);
+      font-size: 24px;
       font-weight: 800;
       margin: 0;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -315,7 +340,7 @@
 
     .app-subtitle {
       color: var(--text-sub);
-      font-size: 14px;
+      font-size: 18px;
       margin-top: 4px;
       font-weight: 500;
     }
@@ -386,43 +411,21 @@
       padding-right: 40px;
     }
 
-/* Alternative: Dùng sliding pill độc lập */
-.segmented-control {
-  display: flex;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 16px;
-  margin: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  position: relative;
-}
-
-.sliding-pill {
-  position: absolute;
-  top: 6px;
-  left: 0;
-
-  width: calc(33.3333% - 12px);
-  height: calc(100% - 12px);
-
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-
-  box-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.6);
-
-  transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
-  z-index: 1;
-}
-
-
-
+    .sliding-pill {
+      position: absolute;
+      top: 5px;
+      left: 2px;
+      width: calc(33.3333% - 10px);
+      height: calc(100% - 10px);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 25px;
+      /* border: 1px solid rgba(255, 255, 255, 0.6); */
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1;
+    }
   </style>
 </head>
 
@@ -441,12 +444,12 @@
       <div class="app-subtitle">Oops, I Spent Again...</div>
     </div>
 
-<div class="segmented-control">
-  <div class="sliding-pill"></div>
-  <div class="segmented-item active" onclick="switchView('input')">🤏 MIX</div>
-  <div class="segmented-item" onclick="switchView('history')">🧁 TASTE</div>
-  <div class="segmented-item" onclick="switchView('stats')">🍕 SLICE</div>
-</div>
+    <div class="segmented-control">
+      <div class="sliding-pill"></div>
+      <div class="segmented-item active" onclick="switchView('input')">🤏 MIX</div>
+      <div class="segmented-item" onclick="switchView('history')">🧁 TASTE</div>
+      <div class="segmented-item" onclick="switchView('stats')">🍕 SLICE</div>
+    </div>
 
     <div class="content">
       <div id="view-input" class="view active">
@@ -476,14 +479,14 @@
           <label>Recipe Note</label>
           <input id="note" type="text" placeholder="Cafe, Dinner, Groceries...">
         </div>
-        
+
         <button id="btnSave" onclick="save()">SERVE</button>
       </div>
 
       <div id="view-history" class="view">
         <div id="history-list"></div>
       </div>
-      
+
       <div id="view-stats" class="view">
         <div id="myChart" style="height:300px;"></div>
       </div>
@@ -498,7 +501,7 @@
     google.charts.load('current', { 'packages': ['corechart'] });
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
     let cachedData = null;
-    
+
     async function loadInitialData() {
       const now = new Date();
       const dateInput = document.getElementById('date');
@@ -510,7 +513,7 @@
       setTimeout(() => {
         const loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen) loadingScreen.style.display = 'none';
-      }, 1000);
+      }, 500);
 
       try {
         const response = await fetch(SCRIPT_URL);
@@ -624,15 +627,15 @@
 
     function renderStats() {
       google.charts.setOnLoadCallback(drawChart);
-      
+
       function drawChart() {
         const stats = cachedData.stats;
         const dataArray = [['Person', 'Total']];
-        
+
         for (let p in stats) {
           dataArray.push([p, stats[p]]);
         }
-        
+
         const data = google.visualization.arrayToDataTable(dataArray);
         const options = {
           title: 'Expense Distribution',
@@ -644,7 +647,7 @@
             height: '80%'
           }
         };
-        
+
         const chart = new google.visualization.PieChart(document.getElementById('myChart'));
         chart.draw(data, options);
       }
@@ -698,33 +701,33 @@
       }
     }
 
-function switchView(view) {
-  document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+    function switchView(view) {
+      document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
+      event.currentTarget.classList.add('active');
 
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + view).classList.add('active');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + view).classList.add('active');
 
-  movePillToActive();
+      movePillToActive();
 
-  if (view === 'history') renderHistory();
-  if (view === 'stats') renderStats();
-}
+      if (view === 'history') renderHistory();
+      if (view === 'stats') renderStats();
+    }
 
 
-function movePillToActive() {
-  const pill = document.querySelector('.sliding-pill');
-  const activeItem = document.querySelector('.segmented-item.active');
+    function movePillToActive() {
+      const pill = document.querySelector('.sliding-pill');
+      const activeItem = document.querySelector('.segmented-item.active');
 
-  if (!pill || !activeItem) return;
+      if (!pill || !activeItem) return;
 
-  const container = activeItem.parentElement;
-  const itemRect = activeItem.getBoundingClientRect();
-  const containerRect = container.getBoundingClientRect();
+      const container = activeItem.parentElement;
+      const itemRect = activeItem.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
 
-  const offsetX = itemRect.left - containerRect.left;
-  pill.style.transform = `translateX(${offsetX}px)`;
-}
+      const offsetX = itemRect.left - containerRect.left;
+      pill.style.transform = `translateX(${offsetX}px)`;
+    }
 
 
     window.onload = loadInitialData;
