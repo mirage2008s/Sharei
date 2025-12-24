@@ -7,11 +7,12 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Reddit+Mono:wght@200..900&display=swap" rel="stylesheet">
-  <!-- cdn ggicon -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Reddit+Mono:wght@200..900&display=swap" rel="stylesheet">  <!-- cdn ggicon -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <title>Shareiz🍪</title>
+  <title>Shareiz</title>
   <style>
     :root {
       --primary: #FFDD00;
@@ -30,8 +31,8 @@
 
 
     body {
-      font-family: 'Reddit Mono', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Google Sans Flex', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #aed581 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -44,7 +45,7 @@
       backdrop-filter: var(--blur-bg);
       -webkit-backdrop-filter: var(--blur-bg);
       border: 1px solid var(--glass-border);
-      border-radius: 24px;
+      border-radius: 15px;
       box-shadow: var(--glass-shadow);
       width: 100%;
       max-width: 500px;
@@ -93,7 +94,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-radius: 25px;
-      margin: 20px;
+      margin: 10px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
       position: relative;
@@ -124,13 +125,106 @@
       background: transparent;
       color: var(--text-primary);
     }
+    
+    /* Sticky segmented control */
+    .segmented-control-wrapper {
+      position: sticky;
+      top: 15px; /* Cách top 15px */
+      z-index: 100; /* Cao hơn content */
+      /* margin: 20px;
+      padding: 0 10px; Thêm padding để không chạm mép */
+    }
+
+/* Thêm hiệu ứng khi sticky active */
+.segmented-control-wrapper.sticky-active .segmented-control {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+/* Hiệu ứng khi cuộn */
+@keyframes floatIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+/* Đảm bảo content không bị che */
+.content {
+  padding: 0 20px 20px 20px;
+  position: relative;
+  z-index: 1; /* Thấp hơn nav bar */
+}
+
+/* History items spacing để không bị che */
+#history-list {
+  padding-top: 5px; /* Tạo khoảng trống phía trên */
+}
+
+/* Stats chart spacing */
+#myChart {
+  margin-top: 10px;
+}
+
+/* Tạo khoảng trống cho header để khi sticky không che */
+.app-header {
+  padding: 30px 20px 5px 20px; /* Giảm padding bottom */
+}
+
+/* Thêm scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.segmented-control-wrapper.sticky-active .scroll-indicator {
+  opacity: 1;
+}
+
+/* Optional: Thêm gradient mask phía trên khi cuộn */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, 
+    rgba(241, 245, 249, 0.9) 0%,
+    rgba(241, 245, 249, 0.5) 50%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card.scrolled::before {
+  opacity: 1;
+}
 
 
     .content {
       padding: 20px;
       background: rgb(50 50 50 / 5%);
       border-radius: 25px;
-      margin: 0px 20px;
+      margin: 0px 10px;
       border: 2px solid rgba(255, 255, 255, 0.3);
       box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
       position: relative;
@@ -328,7 +422,7 @@
 
     /* History Items với Glassmorphism */
     .history-item {
-      padding: 5px 15px;
+      padding: 10px 15px;
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -360,16 +454,17 @@
 
     /* Header Style */
     .app-header {
+      font-family: 'Reddit Mono', monospace;
       text-align: center;
       padding: 10px 20px 10px 20px;
     }
 
     .app-title {
-      color: var(--primary);
-      font-size: 24px;
-      font-weight: 800;
-      margin: 0;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      color: #7cb342;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 5px;
+      text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
     }
 
     .app-subtitle {
@@ -378,34 +473,6 @@
       margin-top: 4px;
       font-weight: 500;
     }
-
-    /* Toggle Button Style
-    #toggle-more-btn {
-      display: flex;
-      position: relative;
-      padding: 10px 16px;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
-      color: var(--text-sub);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    #toggle-more-btn:hover {
-      background: rgba(255, 255, 255, 0.9);
-      transform: translateY(-1px);
-    }
-
-    #toggle-more-btn:active {
-      transform: translateY(0);
-    } */
 
     .expand-btn {
       display: flex;
@@ -502,17 +569,18 @@
 
   <div class="card">
     <div class="app-header">
-      <h3 class="app-title">Shareiz 🍪</h3>
+      <h3 class="app-title">Shareiz</h3>
       <div class="app-subtitle">Oops, I Spent Again...</div>
     </div>
-
+ <div class="segmented-control-wrapper">
     <div class="segmented-control">
       <div class="sliding-pill"></div>
       <div class="segmented-item active" onclick="switchView('input')">🤏 MIX</div>
       <div class="segmented-item" onclick="switchView('history')">🧁 TASTE</div>
       <div class="segmented-item" onclick="switchView('stats')">🍕 SLICE</div>
+      <div class="scroll-indicator"></div>
     </div>
-
+</div>
     <div class="content">
       <div id="view-input" class="view active">
         <div class="field-group">
@@ -605,6 +673,11 @@
         console.error("Error in loading init data:", error);
         document.getElementById('loading-screen').innerHTML = "<p>Error: Please refresh</p>";
       }
+
+      // Setup sticky nav sau khi load
+  setTimeout(() => {
+    setupStickyNav();
+  }, 100);
     }
 
     function showNotification(message, type = 'success') {
@@ -691,14 +764,14 @@
       list.innerHTML = cachedData.history.map(item => `
         <div class="history-item">
           <div>
-            <strong style="display: block; margin-bottom: 2px; color: var(--text-primary);">
+            <span style="display: block; font-weight:500; margin-bottom: 2px; color: var(--text-sub);">
               ${item.note || 'Expense'}
-            </strong>
+            </span>
             <small style="color: var(--text-sub); font-size: 12px;">
               ${item.date} • by ${item.payer}
             </small>
           </div>
-          <div style="color: var(--text-primary); font-weight: 600; font-size: 18px;">
+          <div style="color: var(--text-primary); margin-left: 10px; font-weight: 500; font-size: 18px;">
             ${item.amount}K
           </div>
         </div>
@@ -719,7 +792,7 @@
         const data = google.visualization.arrayToDataTable(dataArray);
         const options = {
           title: 'Expense Distribution',
-          pieHole: 0.4,
+          pieHole: 0.2,
           colors: ['#FFDD00', '#8BAE66', '#FA6868', '#90AB8B', '#EBF4DD', '#B45309'],
           backgroundColor: 'transparent',
           chartArea: {
@@ -808,6 +881,56 @@
       const offsetX = itemRect.left - containerRect.left;
       pill.style.transform = `translateX(${offsetX}px)`;
     }
+
+    // Thêm sticky behavior
+let lastScrollTop = 0;
+let isSticky = false;
+
+function setupStickyNav() {
+  const card = document.querySelector('.card');
+  const navWrapper = document.querySelector('.segmented-control-wrapper');
+  const content = document.querySelector('.content');
+  
+  if (!card || !navWrapper) return;
+  
+  // Theo dõi scroll
+  card.addEventListener('scroll', function() {
+    const scrollTop = card.scrollTop;
+    const scrollThreshold = 50; // Ngưỡng scroll để kích hoạt sticky
+    
+    if (scrollTop > scrollThreshold) {
+      if (!isSticky) {
+        navWrapper.classList.add('sticky-active');
+        card.classList.add('scrolled');
+        isSticky = true;
+      }
+    } else {
+      if (isSticky) {
+        navWrapper.classList.remove('sticky-active');
+        card.classList.remove('scrolled');
+        isSticky = false;
+      }
+    }
+    
+    // Optional: Hide/show khi cuộn xuống/lên
+    if (scrollTop > lastScrollTop && scrollTop > 100) {
+      // Scrolling down
+      navWrapper.style.transform = 'translateY(-10px)';
+      navWrapper.style.opacity = '0.9';
+    } else {
+      // Scrolling up
+      navWrapper.style.transform = 'translateY(0)';
+      navWrapper.style.opacity = '1';
+    }
+    
+    lastScrollTop = scrollTop;
+  });
+  
+  // Thêm scroll vào card
+  card.style.overflowY = 'auto';
+  card.style.maxHeight = 'calc(100vh - 40px)'; // Để có thể scroll
+  card.style.WebkitOverflowScrolling = 'touch'; // Smooth scroll trên iOS
+}
 
 
     window.onload = loadInitialData;
