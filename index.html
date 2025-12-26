@@ -7,67 +7,87 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Pacifico&family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Pacifico&family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <title>Shareiz</title>
   <style>
+    /* =====================================================
+   ROOT VARIABLES
+===================================================== */
     :root {
-      --primary: #FFDD00;
-      --primary-light: #FBE87F;
+      --primary: #388e3c;
+      --primary-light: #66bb6a;
+
       --glass-bg: rgba(255, 255, 255, 0.25);
       --glass-border: rgba(255, 255, 255, 0.3);
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
       --text-primary: #1e293b;
       --text-sub: #64748b;
+
       --blur-bg: blur(10px);
     }
 
+    /* =====================================================
+   RESET & BASE
+===================================================== */
     * {
       -webkit-tap-highlight-color: transparent;
     }
 
-
     body {
+      margin: 0;
+      min-height: 100vh;
       font-family: 'Reddit Sans', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #aed581 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      box-sizing: border-box;
+      background: linear-gradient(135deg, #f5f7fa 0%, #aed581 100%);
     }
 
+    /* =====================================================
+   CARD LAYOUT
+===================================================== */
     .card {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
       background: var(--glass-bg);
       backdrop-filter: var(--blur-bg);
       -webkit-backdrop-filter: var(--blur-bg);
+
       border: 1px solid var(--glass-border);
       border-radius: 15px;
       box-shadow: var(--glass-shadow);
-      width: 100%;
-      max-width: 500px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* Loading Screen */
+    /* =====================================================
+   LOADING SCREEN
+===================================================== */
     #loading-screen {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      inset: 0;
+      z-index: 9999;
+
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
+
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       backdrop-filter: blur(5px);
     }
 
@@ -76,72 +96,132 @@
       aspect-ratio: 1;
       border-radius: 50%;
       background:
-        radial-gradient(farthest-side, #FFDD00 94%, #0000) top/8px 8px no-repeat,
-        conic-gradient(#0000 30%, #FFDD00);
+        radial-gradient(farthest-side, var(--primary) 94%, #0000) top/8px 8px no-repeat,
+        conic-gradient(#0000 30%, var(--primary));
       -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
-      animation: l13 1s infinite linear;
+      animation: spin 1s infinite linear;
     }
 
-    @keyframes l13 {
-      100% {
-        transform: rotate(1turn)
+    @keyframes spin {
+      to {
+        transform: rotate(1turn);
       }
     }
 
-    /* Segmented Control Tabs */
+    /* =====================================================
+   HEADER
+===================================================== */
+    .app-header {
+      text-align: center;
+      padding: 10px 20px;
+      font-family: 'Pacifico', monospace;
+    }
+
+    .app-title {
+      margin: 5px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #66bb6a;
+      text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .app-subtitle {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+
+    /* =====================================================
+   SEGMENTED CONTROL
+===================================================== */
     .segmented-control {
+      position: relative;
       display: flex;
+      margin: 10px;
+
       background: rgb(50 50 50 / 5%);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+
       border-radius: 25px;
-      margin: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-      position: relative;
+
+      position: sticky;
+      top: 10px;
+      z-index: 10;
     }
 
     .segmented-item {
       flex: 1;
       text-align: center;
       padding: 12px 0;
+
       font-size: 14px;
       font-weight: 600;
       color: var(--text-sub);
+
       cursor: pointer;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-      margin: 0 2px;
+      user-select: none;
+      outline: none;
+
       position: relative;
       z-index: 2;
-      outline: none;
-      user-select: none;
-    }
+      margin: 0 2px;
 
-    .segmented-item:focus {
-      outline: none;
+      transition: all 0.3s ease;
     }
 
     .segmented-item.active {
-      background: transparent;
       color: var(--text-primary);
     }
-  
 
+    .sliding-pill {
+      position: absolute;
+      top: 5px;
+      left: 2px;
 
+      width: calc(33.3333% - 10px);
+      height: calc(100% - 10px);
+
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+
+      border-radius: 25px;
+      z-index: 1;
+
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.12),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* =====================================================
+   CONTENT / VIEW
+===================================================== */
     .content {
+      margin: 0 10px;
       padding: 20px;
+
       background: rgb(50 50 50 / 5%);
       border-radius: 25px;
-      margin: 0px 10px;
       border: 2px solid rgba(255, 255, 255, 0.3);
+
       box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
-      position: relative;
+    }
+
+    #view-history {
+      margin: -10px;
     }
 
     .view {
       display: none;
       animation: fadeIn 0.3s ease;
+    }
+
+    .view.active {
+      display: block;
     }
 
     @keyframes fadeIn {
@@ -156,26 +236,23 @@
       }
     }
 
-    .view.active {
-      display: block;
-    }
-
-    /* Form Styles với Glassmorphism */
+    /* =====================================================
+   FORM ELEMENTS
+===================================================== */
     .field-group {
       margin-bottom: 20px;
     }
 
     label {
       display: block;
+      margin-bottom: 8px;
       font-size: 13px;
       font-weight: 600;
-      color: var(--text-sub);
-      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      color: var(--text-sub);
     }
 
-    /* Container bao quanh input và icon */
     .input-wrapper {
       position: relative;
       display: flex;
@@ -187,23 +264,14 @@
         'FILL' 0,
         'wght' 300,
         'GRAD' 0,
-        'opsz' 24
+        'opsz' 24;
     }
 
-
-    /* Định vị icon */
     .icon-right {
       position: absolute;
       right: 12px;
       color: var(--text-sub);
       pointer-events: none;
-      /* Để khi click vào icon thì vẫn focus vào input */
-    }
-
-    /* Riêng cho input type="date", ẩn icon lịch mặc định của trình duyệt để dùng Google Icon cho đẹp */
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-      cursor: pointer;
     }
 
     input,
@@ -211,11 +279,18 @@
       width: 100%;
       padding: 5px 15px;
       font-size: 16px;
+
       border-radius: 20px;
       border: 2px solid rgba(255, 255, 255, 0.3);
+
       background: rgba(255, 255, 255, 0.7);
-      box-sizing: border-box;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05)
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    #date,
+    #payerSelect {
+      text-align: center;
+      color: var(--primary);
     }
 
     input:focus,
@@ -226,6 +301,22 @@
       box-shadow: 0 4px 16px rgba(255, 221, 0, 0.15);
     }
 
+    /* Hide native date icon */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    #payerSelect {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: none;
+    }
+
+    /* =====================================================
+   SPLIT / CHECKBOX
+===================================================== */
     .split-box {
       display: flex;
       gap: 8px;
@@ -244,14 +335,17 @@
     .check-item label {
       display: block;
       padding: 5px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 14px;
       text-align: center;
+
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
+
+      border-radius: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+
       cursor: pointer;
       transition: all 0.3s ease;
+
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
@@ -262,26 +356,31 @@
       box-shadow: 0 4px 16px rgba(255, 221, 0, 0.3);
     }
 
+    /* =====================================================
+   BUTTONS
+===================================================== */
     #btnSave {
       width: 100%;
+      margin-top: 10px;
       padding: 10px;
-      background: var(--primary);
-      color: var(--text-sub);
+
       border: none;
       border-radius: 16px;
-      font-weight: 600;
+
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+
+      background: var(--primary-light);
+      color: white;
+
+      box-shadow: 0 4px 20px var(--primary);
       transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(255, 221, 0, 0.3);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
     }
 
     #btnSave:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(255, 221, 0, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px var(--primary);
     }
 
     #btnSave:active {
@@ -290,30 +389,58 @@
 
     #btnSave:disabled {
       opacity: 0.6;
-      transform: none;
       box-shadow: none;
     }
 
-    /* Toast Notification với Glassmorphism */
+    /* =====================================================
+   EXPAND BUTTON
+===================================================== */
+    .expand-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(6px);
+      border-radius: 14px;
+
+      color: var(--text-sub);
+    }
+
+    .expand-arrow {
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .expand-btn.expanded .expand-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* =====================================================
+   TOAST
+===================================================== */
     #toast {
       position: fixed;
       top: 10px;
       right: 10px;
-      background: var(--blur-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: var(--text-primary);
-      padding: 10px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       z-index: 10000;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      transform: translateX(150%);
-      opacity: 0;
+
       display: flex;
       align-items: center;
       gap: 12px;
+
+      padding: 10px;
+      border-radius: 16px;
+
+      background: var(--blur-bg);
+      backdrop-filter: blur(10px);
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+      transform: translateX(150%);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     #toast.show {
@@ -329,140 +456,76 @@
       border-left: 4px solid #ef4444;
     }
 
-    /* History Items với Glassmorphism */
-    .history-item {
-      padding: 10px 15px;
+    /* =====================================================
+   HISTORY & CHART
+===================================================== */
+    .history-item,
+    #myChart {
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 16px;
-      margin-bottom: 12px;
+
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .history-item {
+      padding: 10px 12px;
+      margin-bottom: 10px;
+
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       transition: all 0.3s ease;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     }
 
     .history-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--primary-light);
     }
 
-    /* Chart Container với Glassmorphism */
     #myChart {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
-    /* Header Style */
-    .app-header {
-      font-family: 'Pacifico', monospace;
-      text-align: center;
-      padding: 10px 20px 10px 20px;
-    }
-
-    .app-title {
-      color: #66bb6a;
-      font-size: 28px;
-      font-weight: 700;
-      margin: 5px;
-      text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .app-subtitle {
-      color: var(--text-sub);
-      font-size: 18px;
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    .expand-btn {
+    /* History item content */
+    .history-main {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-
-      /* border: 1px solid rgba(255, 255, 255, 0.3); */
-      border-radius: 14px;
-
-      /* font-size: 13px;
-  font-weight: 600; */
-      color: var(--text-sub);
-
-      /* cursor: pointer;
-  user-select: none; */
-
-      /* transition: background 0.3s ease, box-shadow 0.3s ease; */
+      flex-direction: column;
     }
 
-    .expand-arrow {
-      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    .history-title {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text-primary);
     }
 
-    /* Expanded state */
-    .expand-btn.expanded .expand-arrow {
-      transform: rotate(180deg);
-    }
-
-    /* Footer */
-    .app-footer {
-      text-align: center;
-      padding: 20px;
-      color: var(--text-sub);
+    .history-meta {
       font-size: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-sub);
+    }
+
+    .history-amount {
+      margin-left: 10px;
+      font-weight: 500;
+      font-size: 16px;
+      color: #66bb6a;
+    }
+
+
+    /* =====================================================
+   FOOTER
+===================================================== */
+    .app-footer {
       margin-top: 20px;
-    }
-
-    /* Date Input Styling */
-    input[type="date"] {
-      position: relative;
-    }
-
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      background: transparent;
-      bottom: 0;
-      color: transparent;
-      cursor: pointer;
-      height: auto;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: auto;
-    }
-
-    /* Select Styling */
-    select {
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    .sliding-pill {
-      position: absolute;
-      top: 5px;
-      left: 2px;
-      width: calc(33.3333% - 10px);
-      height: calc(100% - 10px);
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(12px);
-      border-radius: 25px;
-      /* border: 1px solid rgba(255, 255, 255, 0.6); */
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12),
-        inset 0 1px 1px rgba(255, 255, 255, 0.6);
-      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 1;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-sub);
     }
   </style>
 </head>
@@ -581,9 +644,9 @@
       }
 
       // Setup sticky nav sau khi load
-  setTimeout(() => {
-    setupStickyNav();
-  }, 100);
+      setTimeout(() => {
+        setupStickyNav();
+      }, 100);
     }
 
     function showNotification(message, type = 'success') {
@@ -668,20 +731,20 @@
       }
 
       list.innerHTML = cachedData.history.map(item => `
-        <div class="history-item">
-          <div>
-            <span style="display: block; font-weight:500; margin-bottom: 2px; color: var(--text-sub);">
-              ${item.note || 'Expense'}
-            </span>
-            <small style="color: var(--text-sub); font-size: 12px;">
-              ${item.date} • by ${item.payer}
-            </small>
-          </div>
-          <div style="color: var(--text-primary); margin-left: 10px; font-weight: 500; font-size: 18px;">
-            ${item.amount}K
-          </div>
-        </div>
-      `).join('');
+  <div class="history-item">
+    <div class="history-main">
+      <span class="history-title">
+        ${item.note || 'Expense'}
+      </span>
+      <small class="history-meta">
+        ${item.date} • by ${item.payer}
+      </small>
+    </div>
+    <div class="history-amount">
+      ${item.amount}.₫
+    </div>
+  </div>
+`).join('');
     }
 
     function renderStats() {
@@ -789,54 +852,54 @@
     }
 
     // Thêm sticky behavior
-let lastScrollTop = 0;
-let isSticky = false;
+    let lastScrollTop = 0;
+    let isSticky = false;
 
-function setupStickyNav() {
-  const card = document.querySelector('.card');
-  const navWrapper = document.querySelector('.segmented-control-wrapper');
-  const content = document.querySelector('.content');
-  
-  if (!card || !navWrapper) return;
-  
-  // Theo dõi scroll
-  card.addEventListener('scroll', function() {
-    const scrollTop = card.scrollTop;
-    const scrollThreshold = 50; // Ngưỡng scroll để kích hoạt sticky
-    
-    if (scrollTop > scrollThreshold) {
-      if (!isSticky) {
-        navWrapper.classList.add('sticky-active');
-        card.classList.add('scrolled');
-        isSticky = true;
-      }
-    } else {
-      if (isSticky) {
-        navWrapper.classList.remove('sticky-active');
-        card.classList.remove('scrolled');
-        isSticky = false;
-      }
+    function setupStickyNav() {
+      const card = document.querySelector('.card');
+      const navWrapper = document.querySelector('.segmented-control-wrapper');
+      const content = document.querySelector('.content');
+
+      if (!card || !navWrapper) return;
+
+      // Theo dõi scroll
+      card.addEventListener('scroll', function () {
+        const scrollTop = card.scrollTop;
+        const scrollThreshold = 50; // Ngưỡng scroll để kích hoạt sticky
+
+        if (scrollTop > scrollThreshold) {
+          if (!isSticky) {
+            navWrapper.classList.add('sticky-active');
+            card.classList.add('scrolled');
+            isSticky = true;
+          }
+        } else {
+          if (isSticky) {
+            navWrapper.classList.remove('sticky-active');
+            card.classList.remove('scrolled');
+            isSticky = false;
+          }
+        }
+
+        // Optional: Hide/show khi cuộn xuống/lên
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          // Scrolling down
+          navWrapper.style.transform = 'translateY(-10px)';
+          navWrapper.style.opacity = '0.9';
+        } else {
+          // Scrolling up
+          navWrapper.style.transform = 'translateY(0)';
+          navWrapper.style.opacity = '1';
+        }
+
+        lastScrollTop = scrollTop;
+      });
+
+      // Thêm scroll vào card
+      card.style.overflowY = 'auto';
+      card.style.maxHeight = 'calc(100vh - 40px)'; // Để có thể scroll
+      card.style.WebkitOverflowScrolling = 'touch'; // Smooth scroll trên iOS
     }
-    
-    // Optional: Hide/show khi cuộn xuống/lên
-    if (scrollTop > lastScrollTop && scrollTop > 100) {
-      // Scrolling down
-      navWrapper.style.transform = 'translateY(-10px)';
-      navWrapper.style.opacity = '0.9';
-    } else {
-      // Scrolling up
-      navWrapper.style.transform = 'translateY(0)';
-      navWrapper.style.opacity = '1';
-    }
-    
-    lastScrollTop = scrollTop;
-  });
-  
-  // Thêm scroll vào card
-  card.style.overflowY = 'auto';
-  card.style.maxHeight = 'calc(100vh - 40px)'; // Để có thể scroll
-  card.style.WebkitOverflowScrolling = 'touch'; // Smooth scroll trên iOS
-}
 
 
     window.onload = loadInitialData;
