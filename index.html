@@ -21,8 +21,8 @@
    ROOT VARIABLES
 ===================================================== */
     :root {
-      --primary: #388e3c;
-      --primary-light: #66bb6a;
+      --primary: #7cb342;
+      --primary-light: #aed581;
 
       --glass-bg: rgba(255, 255, 255, 0.25);
       --glass-border: rgba(255, 255, 255, 0.3);
@@ -269,7 +269,7 @@
 
     .icon-right {
       position: absolute;
-      right: 12px;
+      right: 10px;
       color: var(--text-sub);
       pointer-events: none;
     }
@@ -277,7 +277,7 @@
     input,
     select {
       width: 100%;
-      padding: 5px 15px;
+      padding: 5px 40px 5px 15px;
       font-size: 16px;
 
       border-radius: 20px;
@@ -289,8 +289,10 @@
 
     #date,
     #payerSelect {
-      text-align: center;
-      color: var(--primary);
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: none;
     }
 
     input:focus,
@@ -305,13 +307,6 @@
     input[type="date"]::-webkit-calendar-picker-indicator {
       opacity: 0;
       cursor: pointer;
-    }
-
-    #payerSelect {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: none;
     }
 
     /* =====================================================
@@ -352,8 +347,6 @@
     .check-item input:checked+label {
       background: var(--primary);
       color: white;
-      border-color: var(--primary);
-      box-shadow: 0 4px 16px rgba(255, 221, 0, 0.3);
     }
 
     /* =====================================================
@@ -371,16 +364,16 @@
       font-weight: 600;
       cursor: pointer;
 
-      background: var(--primary-light);
+      background: var(--primary);
       color: white;
 
-      box-shadow: 0 4px 20px var(--primary);
+      box-shadow: 0 4px 10px var(--primary);
       transition: all 0.3s ease;
     }
 
     #btnSave:hover {
       transform: translateY(-3px);
-      box-shadow: 0 6px 24px var(--primary);
+      box-shadow: 0 6px 20px var(--primary);
     }
 
     #btnSave:active {
@@ -591,7 +584,7 @@
         <div class="field-group">
           <label>Recipe Note</label>
           <div class="input-wrapper">
-            <input id="note" type="text" placeholder="Cafe, Dinner, Groceries...">
+            <input id="note" type="text" placeholder="Cafe, Banh mi...">
             <span class="material-symbols-outlined icon-right">stylus_note</span>
           </div>
         </div>
