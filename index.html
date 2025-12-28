@@ -137,9 +137,9 @@
     .segmented-control {
       position: relative;
       display: flex;
-      margin: 10px;
+      margin: 10px 20px;
 
-      background: rgb(50 50 50 / 5%);
+      background: rgb(50 50 50 / 0%);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
 
@@ -211,7 +211,7 @@
       box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
     }
 
-    #view-history {
+    #view-history, #view-stats {
       margin: -10px;
     }
 
@@ -454,7 +454,7 @@
 ===================================================== */
     .history-item,
     #myChart {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.6);
       backdrop-filter: blur(10px);
 
       border: 1px solid rgba(255, 255, 255, 0.3);
@@ -462,6 +462,54 @@
 
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     }
+
+    .history-filter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 10px 10px 10px;
+    }
+
+    .month-label {
+      padding: 2px 5px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      border-radius: 25px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-btn {
+      width: 48px;
+      cursor: pointer;
+      color: var(--text-sub);
+      background: rgb(255 255 255 / 5%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 25px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 0;
+    }
+
+    .filter-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* hidden month input */
+    #historyMonth {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
 
     .history-item {
       padding: 10px 12px;
@@ -502,11 +550,25 @@
       color: var(--text-sub);
     }
 
+    .history-right {
+      display: flex;
+      align-items: center;
+      margin-right: -5px;
+    }
+
     .history-amount {
+      padding: 5px 10px;
       margin-left: 10px;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 16px;
       color: #66bb6a;
+      background: rgb(50 50 50 / 5%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+
+      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 
 
@@ -593,10 +655,30 @@
       </div>
 
       <div id="view-history" class="view">
+        <div class="history-filter">
+          <span id="monthLabel" class="month-label">Current month</span>
+
+          <button class="filter-btn" onclick="toggleMonthPicker()">
+            <span class="material-symbols-outlined">filter_list</span>
+          </button>
+
+          <input type="month" id="historyMonth" onchange="onMonthSelected(this.value)" />
+        </div>
+
+
         <div id="history-list"></div>
       </div>
 
       <div id="view-stats" class="view">
+        <div class="history-filter">
+          <span id="monthLabel2" class="month-label">Current month</span>
+
+          <button class="filter-btn" onclick="toggleMonthPicker()">
+            <span class="material-symbols-outlined">filter_list</span>
+          </button>
+
+          <input type="month" id="historyMonth" onchange="onMonthSelected(this.value)" />
+        </div>
         <div id="myChart" style="height:300px;"></div>
       </div>
     </div>
@@ -701,44 +783,128 @@
       }
     }
 
-    // function switchView(view) {
-    //   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    //   document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
-    //   document.getElementById('view-' + view).classList.add('active');
-    //   event.currentTarget.classList.add('active');
+    function getHistory(inputMonth) {
+      const date = inputMonth ? new Date(inputMonth + "-01") : new Date();
+      const sheet = getDynamicSheet(date);
+      console.log("Getting history for month:", inputMonth, sheet.getName());
+      const data = sheet.getDataRange().getValues();
 
-    //   if (view === 'history') renderHistory();
-    //   if (view === 'stats') renderStats();
-    // }
+      if (data.length <= 1) return [];
+
+      return data
+        .slice(1)
+        .map((row, i) => ({
+          rowIndex: i + 2, // real row index in sheet
+          date: row[0] instanceof Date
+            ? Utilities.formatDate(row[0], "GMT+7", "dd/MM")
+            : row[0],
+          amount: row[1],
+          payer: row[2],
+          note: row[4]
+        }))
+        .reverse()
+        .slice(0, 20);
+    }
+
 
     function renderHistory() {
       const list = document.getElementById('history-list');
       list.innerHTML = '';
 
-      if (!cachedData || !cachedData.history || cachedData.history.length === 0) {
-        list.innerHTML = `
-          <div class="history-item" style="text-align: center; justify-content: center;">
-            <p style="color: #94a3b8; margin: 0;">No data this month</p>
-          </div>`;
+      if (!cachedData?.history?.length) {
+        list.innerHTML = `<div class="history-item" style="justify-content:center;">
+      <span style="color:#94a3b8;">No data</span>
+    </div>`;
         return;
       }
 
       list.innerHTML = cachedData.history.map(item => `
-  <div class="history-item">
-    <div class="history-main">
-      <span class="history-title">
-        ${item.note || 'Expense'}
-      </span>
-      <small class="history-meta">
-        ${item.date} • by ${item.payer}
-      </small>
+    <div class="history-item">
+      <div class="history-main">
+        <span class="history-title">${item.note || 'Expense'}</span>
+        <small class="history-meta">${item.date} • by ${item.payer}</small>
+      </div>
+
+      <div class="history-right">
+        <div class="history-amount">${item.amount}.₫</div>
+        <span class="material-symbols-outlined"
+          style="cursor:pointer;color:#f44336; padding-left:8px;"
+          onclick="deleteHistory(${item.rowIndex})">
+          delete
+        </span>
+      </div>
     </div>
-    <div class="history-amount">
-      ${item.amount}.₫
-    </div>
-  </div>
-`).join('');
+  `).join('');
     }
+
+    async function deleteHistory(rowIndex) {
+      if (!confirm("Delete this expense?")) return;
+
+      console.log("Deleting row:", rowIndex, "from month:", currentMonth);
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+          action: "delete",
+          rowIndex,
+          month: currentMonth
+        })
+      });
+
+      showNotification("Deleted");
+      loadHistoryByMonth();
+    }
+
+    let currentMonth = new Date().toISOString().slice(0, 7);
+
+    function toggleMonthPicker() {
+      const input = document.getElementById('historyMonth');
+      input.showPicker(); // modern browsers
+    }
+
+    function onMonthSelected(value) {
+      if (!value) return;
+
+      currentMonth = value;
+      updateMonthLabel(value);
+      loadHistoryByMonth();
+    }
+
+    function updateMonthLabel(month) {
+      if (!month) {
+        document.getElementById('monthLabel').innerText = "Current month";
+        document.getElementById('monthLabel2').innerText = "Current month";
+        return;
+      }
+
+      const [y, m] = month.split("-");
+      const date = new Date(y, m - 1);
+      const text = date.toLocaleString('en-US', {
+        month: 'short',
+        year: 'numeric'
+      });
+
+      document.getElementById('monthLabel').innerText = text;
+      document.getElementById('monthLabel2').innerText = text;
+    }
+
+
+
+    // function changeMonth(month) {
+    //   console.log("Changing month to:", month);
+    //   currentMonth = month;
+    //   loadHistoryByMonth();
+    // }
+
+    async function loadHistoryByMonth() {
+      const res = await fetch(`${SCRIPT_URL}?month=${currentMonth}`);
+      cachedData = await res.json();
+      console.log("Loaded data for month:", currentMonth, cachedData);
+      renderHistory();
+      renderStats();
+    }
+
+
 
     function renderStats() {
       google.charts.setOnLoadCallback(drawChart);
@@ -753,8 +919,8 @@
 
         const data = google.visualization.arrayToDataTable(dataArray);
         const options = {
-          title: 'Expense Distribution',
-          pieHole: 0.2,
+          title: 'Distribution',
+          pieHole: 0.3,
           colors: ['#FFDD00', '#8BAE66', '#FA6868', '#90AB8B', '#EBF4DD', '#B45309'],
           backgroundColor: 'transparent',
           chartArea: {
@@ -829,7 +995,6 @@
       if (view === 'stats') renderStats();
     }
 
-
     function movePillToActive() {
       const pill = document.querySelector('.sliding-pill');
       const activeItem = document.querySelector('.segmented-item.active');
@@ -892,6 +1057,14 @@
       card.style.overflowY = 'auto';
       card.style.maxHeight = 'calc(100vh - 40px)'; // Để có thể scroll
       card.style.WebkitOverflowScrolling = 'touch'; // Smooth scroll trên iOS
+    }
+
+
+    function deleteExpense(rowIndex, month) {
+      const date = month ? new Date(month + "-01") : new Date();
+      const sheet = getDynamicSheet(date);
+      sheet.deleteRow(rowIndex);
+      return true;
     }
 
 

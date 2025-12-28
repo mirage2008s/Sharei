@@ -1,25 +1,44 @@
-// Thay thế hàm doGet cũ
 function doGet(e) {
-  const data = getInitialData(); // Hàm lấy people, history, stats của bạn
-  return ContentService.createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
+  const month = e.parameter.month;
+  console.log("Received month parameter:", month);
+  return ContentService.createTextOutput(
+    JSON.stringify({
+      people: getPeople(),
+      history: getHistory(month),
+      stats: getStats(month)
+    })
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 
-// Hàm doPost để nhận dữ liệu từ GitHub gửi sang
+
 function doPost(e) {
-  try {
-    const params = JSON.parse(e.postData.contents);
-    
-    // Gọi hàm lưu vào Sheet của bạn (giả sử tên là saveToSheet)
-    const result = saveDataToSheet(params); 
-    
-    return ContentService.createTextOutput(JSON.stringify({status: "success", data: result}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({status: "error", message: err.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
+  const params = JSON.parse(e.postData.contents);
+
+  if (params.action === "delete") {
+    deleteExpense(params.rowIndex, params.month);
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "deleted" })
+    ).setMimeType(ContentService.MimeType.JSON);
   }
+
+  saveExpense(params);
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "success" })
+  ).setMimeType(ContentService.MimeType.JSON);
 }
+
+function deleteExpense(rowIndex, month) {
+  if (!rowIndex || rowIndex < 2) {
+    throw new Error("Invalid rowIndex: " + rowIndex);
+  }
+
+  const date = month ? new Date(month + "-01") : new Date();
+  const sheet = getDynamicSheet(date);
+
+  Logger.log("Deleting row: " + rowIndex + " from " + sheet.getName());
+  sheet.deleteRow(rowIndex);
+}
+
 
 // Hàm này giữ nguyên
 function include(filename) {
@@ -81,23 +100,32 @@ function getDynamicSheet(inputDateString) {
   return sheet;
 }
 
-function getHistory() {
-  const now = new Date();
-  const sheet = getDynamicSheet(now);
+function getHistory(inputMonth) {
+  const date = inputMonth ? new Date(inputMonth + "-01") : new Date();
+  const sheet = getDynamicSheet(date);
   const data = sheet.getDataRange().getValues();
+
   if (data.length <= 1) return [];
-  data.shift();
-  return data.reverse().slice(0, 10).map(row => ({
-    date: row[0] instanceof Date ? Utilities.formatDate(row[0], "GMT+7", "dd/MM") : row[0],
-    amount: row[1],
-    payer: row[2],
-    note: row[4]
-  }));
+
+  return data
+    .slice(1)
+    .map((row, i) => ({
+      rowIndex: i + 2, // real row index in sheet
+      date: row[0] instanceof Date
+        ? Utilities.formatDate(row[0], "GMT+7", "dd/MM")
+        : row[0],
+      amount: row[1],
+      payer: row[2],
+      note: row[4]
+    }))
+    .reverse();
+    // .slice(0, 20);
 }
 
-function getStats() {
-  const now = new Date();
-  const sheet = getDynamicSheet(now);
+
+function getStats(inputMonth) {
+  const date = inputMonth ? new Date(inputMonth + "-01") : new Date();
+  const sheet = getDynamicSheet(date);
   const data = sheet.getDataRange().getValues();
   data.shift();
   const stats = {};
