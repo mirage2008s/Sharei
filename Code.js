@@ -1,41 +1,46 @@
 function doGet(e) {
-  const month = e.parameter.month;
-  console.log("Received month parameter:", month);
+  const month = e.parameter.month || getCurrentMonth();
   return ContentService.createTextOutput(
     JSON.stringify({
       people: getPeople(),
       history: getHistory(month),
-      stats: getStats(month)
+      stats: getStats(month),
+      months: getAvailableMonths()
     })
   ).setMimeType(ContentService.MimeType.JSON);
 }
 
 
 function doPost(e) {
-  const params = JSON.parse(e.postData.contents);
+  try {
+    const params = JSON.parse(e.postData.contents);
 
-  if (params.action === "delete") {
-    deleteExpense(params.rowIndex, params.month);
+    if (params.action === "delete") {
+      deleteExpense(params.rowIndex, params.month);
+      return ContentService.createTextOutput(
+        JSON.stringify({ status: "deleted" })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    saveExpense(params);
     return ContentService.createTextOutput(
-      JSON.stringify({ status: "deleted" })
+      JSON.stringify({ status: "saved" })
+    ).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    Logger.log(err);
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "error", message: err.toString() })
     ).setMimeType(ContentService.MimeType.JSON);
   }
-
-  saveExpense(params);
-  return ContentService.createTextOutput(
-    JSON.stringify({ status: "success" })
-  ).setMimeType(ContentService.MimeType.JSON);
 }
+
 
 function deleteExpense(rowIndex, month) {
   if (!rowIndex || rowIndex < 2) {
     throw new Error("Invalid rowIndex: " + rowIndex);
   }
-
-  const date = month ? new Date(month + "-01") : new Date();
-  const sheet = getDynamicSheet(date);
-
-  Logger.log("Deleting row: " + rowIndex + " from " + sheet.getName());
+  const sheet = getDynamicSheetByMonth(month);
   sheet.deleteRow(rowIndex);
 }
 
@@ -45,13 +50,13 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
-// Hàm lấy dữ liệu tổng hợp (Chỉ gọi 1 lần duy nhất)
 function getInitialData() {
   try {
     return {
       people: getPeople(),
       history: getHistory(),
-      stats: getStats()
+      stats: getStats(),
+      months: getAvailableMonths()
     };
   } catch (e) {
     throw new Error("Failed to load data: " + e.message);
@@ -64,29 +69,18 @@ function getPeople() {
   return sheet.getRange(2, 1, sheet.getLastRow()).getValues().flat().filter(String);
 }
 
-function getDynamicSheet(inputDateString) {
+function getCurrentMonth() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+// string-base
+function getDynamicSheetByMonth(month) {
   const ss = SpreadsheetApp.getActive();
-  const dateObj = inputDateString ? new Date(inputDateString) : new Date();
-  if (isNaN(dateObj.getTime())) {
-    throw new Error("Invalid date provided to getDynamicSheet");
-  }
-
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-  let sheetName;
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth();
-
-  if (year <= 2025) {
-    sheetName = monthNames[month];
-  } else {
-    const monthFormatted = (month + 1).toString().padStart(2, '0');
-    sheetName = year + "_" + monthFormatted;
-  }
+  const sheetName = month || getCurrentMonth();
 
   let sheet = ss.getSheetByName(sheetName);
 
-  // Tùy chọn: Nếu sheet tháng mới chưa tồn tại, tự động tạo mới từ một sheet mẫu (Template)
   if (!sheet) {
     const template = ss.getSheetByName('Template');
     if (template) {
@@ -100,9 +94,16 @@ function getDynamicSheet(inputDateString) {
   return sheet;
 }
 
-function getHistory(inputMonth) {
-  const date = inputMonth ? new Date(inputMonth + "-01") : new Date();
-  const sheet = getDynamicSheet(date);
+function getAvailableMonths() {
+  return SpreadsheetApp.getActive().getSheets()
+    .map(sheet => sheet.getName())
+    .filter(name => /^\d{4}-\d{2}$/.test(name))
+    .sort()
+    .reverse();
+}
+
+function getHistory(month) {
+  const sheet = getDynamicSheetByMonth(month);
   const data = sheet.getDataRange().getValues();
 
   if (data.length <= 1) return [];
@@ -123,9 +124,8 @@ function getHistory(inputMonth) {
 }
 
 
-function getStats(inputMonth) {
-  const date = inputMonth ? new Date(inputMonth + "-01") : new Date();
-  const sheet = getDynamicSheet(date);
+function getStats(month) {
+  const sheet = getDynamicSheetByMonth(month);
   const data = sheet.getDataRange().getValues();
   data.shift();
   const stats = {};
@@ -138,7 +138,7 @@ function getStats(inputMonth) {
 }
 
 function saveExpense(data) {
-  const sheet = getDynamicSheet(data.date);
+  const sheet = getDynamicSheetByMonth(data.month || getCurrentMonth());
   sheet.appendRow([data.date, data.amount, data.payer, data.sharedWith.join(", "), data.note]);
   return true;
 }
