@@ -1,1165 +1,872 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Pacifico&family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
   <title>Shareiz</title>
   <style>
-    /* =====================================================
-   ROOT VARIABLES
-===================================================== */
     :root {
-      --primary: #7cb342;
-      --primary-light: #aed581;
+      /* Background — soft warm sage gradient */
+      --bg-a: #e8f0e2;
+      --bg-b: #d4e8cc;
 
-      --glass-bg: rgba(255, 255, 255, 0.25);
-      --glass-border: rgba(255, 255, 255, 0.3);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      /* Frosted light surfaces */
+      --glass:        rgba(255,255,255,0.58);
+      --glass-strong: rgba(255,255,255,0.72);
+      --glass-input:  rgba(255,255,255,0.50);
+      --glass-hover:  rgba(255,255,255,0.68);
+      --blur: blur(20px);
 
-      --text-primary: #1e293b;
-      --text-sub: #64748b;
+      /* Accent — muted sage green */
+      --accent:      #4f9a52;
+      --accent-pale: rgba(79,154,82,0.12);
+      --accent-ring: rgba(79,154,82,0.28);
 
-      --blur-bg: blur(10px);
+      /* Semantic */
+      --red:     #d95f52;
+      --red-pale: rgba(217,95,82,0.10);
+
+      /* Text */
+      --t1: #1a2416;
+      --t2: #4a6044;
+      --t3: #8aa084;
+
+      /* Dividers & shadows */
+      --line: rgba(0,0,0,0.06);
+      --sh0: 0 1px 3px  rgba(0,0,0,0.07);
+      --sh1: 0 2px 10px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+      --sh2: 0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      --sh3: 0 8px 32px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.07);
+
+      /* Radii — restrained */
+      --r-sm:   5px;
+      --r-md:   9px;
+      --r-lg:   13px;
+      --r-xl:   16px;
+      --r-pill: 9999px;
     }
 
-    /* =====================================================
-   RESET & BASE
-===================================================== */
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Reddit Sans', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: linear-gradient(135deg, #f5f7fa 0%, #aed581 100%);
+      margin: 0; height: 100dvh; overflow: hidden;
+      font-family: 'Google Sans', sans-serif;
+      background: linear-gradient(150deg, var(--bg-a) 0%, var(--bg-b) 100%);
+      background-attachment: fixed;
+      display: flex; justify-content: center;
+      color: var(--t1);
     }
 
-    /* =====================================================
-   CARD LAYOUT
-===================================================== */
-    .card {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
+    /* app fills full height — input/stats tab scrolls naturally, history tab locks */
+    .app {
+      width: 100%; max-width: 460px;
+      height: 100dvh;
+      display: flex; flex-direction: column;
       overflow: hidden;
+    }
 
-      background: var(--glass-bg);
-      backdrop-filter: var(--blur-bg);
-      -webkit-backdrop-filter: var(--blur-bg);
-
-      border: 1px solid var(--glass-border);
-      border-radius: 15px;
-      box-shadow: var(--glass-shadow);
-
-      max-height: calc(100vh - 32px);
+    /* content area — input & stats can scroll normally */
+    .content {
+      padding: 0 14px 20px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      flex: 1;
     }
 
-    /* =====================================================
-   LOADING SCREEN
-===================================================== */
+    //* history view fills remaining space without overflowing — only when active */
+    #view-history.active {
+      display: flex !important; flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    #view-history .card {
+      display: flex; flex-direction: column;
+      flex: 1; overflow: hidden;
+      margin-bottom: 0;
+    }
+    #history-list {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.15) transparent;
+      padding-bottom: 12px;
+    }
+    #history-list::-webkit-scrollbar { width: 3px; }
+    #history-list::-webkit-scrollbar-track { background: transparent; }
+    #history-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 3px; }
+
+    /* =====================================================  LOADING  */
     #loading-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      backdrop-filter: blur(5px);
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      background: var(--bg-a);
     }
-
     .loader {
-      width: 50px;
-      aspect-ratio: 1;
-      border-radius: 50%;
+      width: 30px; aspect-ratio: 1; border-radius: 50%;
       background:
-        radial-gradient(farthest-side, var(--primary) 94%, #0000) top/8px 8px no-repeat,
-        conic-gradient(#0000 30%, var(--primary));
-      -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
-      animation: spin 1s infinite linear;
+        radial-gradient(farthest-side, var(--accent) 94%, #0000) top/5px 5px no-repeat,
+        conic-gradient(#0000 30%, var(--accent));
+      -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 5px), #000 0);
+      animation: spin .8s infinite linear;
     }
+    @keyframes spin { to { transform: rotate(1turn); } }
 
-    @keyframes spin {
-      to {
-        transform: rotate(1turn);
-      }
-    }
-
-    /* =====================================================
-   HEADER
-===================================================== */
+    /* =====================================================  HEADER  */
     .app-header {
-      text-align: center;
-      padding: 10px 20px;
-      font-family: 'Pacifico', monospace;
+      padding: 28px 20px 8px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-
     .app-title {
-      margin: 5px;
-      font-size: 28px;
-      font-weight: 700;
-      color: #66bb6a;
-      text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+      font-family: 'Pacifico', cursive; font-size: 28px; margin: 0; line-height: 1;
+      color: var(--accent);
+    }
+    .app-subtitle { font-size: 12px; color: var(--t3); margin-top: 4px; }
+
+    .month-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 7px 12px;
+      background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border-radius: var(--r-lg);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: var(--sh0);
+      font-size: 12px; font-weight: 600; color: var(--t2);
     }
 
-    .app-subtitle {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text-sub);
+    /* =====================================================  NAV  */
+    .nav-wrap {
+      padding: 8px 16px 12px;
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(to bottom, var(--bg-a) 60%, transparent);
     }
-
-    /* =====================================================
-   SEGMENTED CONTROL
-===================================================== */
     .segmented-control {
-      position: relative;
-      display: flex;
-      margin: 10px 20px;
-
-      background: rgb(50 50 50 / 0%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      border-radius: 25px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-
-      position: sticky;
-      top: 10px;
-      z-index: 10;
+      position: relative; display: flex;
+      background: rgba(175,165,148,0.42);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border-radius: var(--r-lg);
+      border: 1px solid rgba(255,255,255,0.32);
+      padding: 3px;
     }
-
     .segmented-item {
-      flex: 1;
-      text-align: center;
-      padding: 12px 0;
-
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-sub);
-
-      cursor: pointer;
-      user-select: none;
-      outline: none;
-
-      position: relative;
-      z-index: 2;
-      margin: 0 2px;
-
-      transition: all 0.3s ease;
+      flex: 1; text-align: center; padding: 9px 4px;
+      font-size: 13px; font-weight: 500; color: rgba(60,52,40,0.65);
+      cursor: pointer; user-select: none;
+      position: relative; z-index: 2;
+      border-radius: var(--r-md);
+      transition: color .2s;
     }
-
-    .segmented-item.active {
-      color: var(--text-primary);
-    }
-
+    .segmented-item.active { color: var(--t1); font-weight: 600; }
     .sliding-pill {
-      position: absolute;
-      top: 5px;
-      left: 2px;
-
-      width: calc(33.3333% - 10px);
-      height: calc(100% - 10px);
-
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(12px);
-
-      border-radius: 25px;
+      position: absolute; top: 3px; left: 3px;
+      width: calc(33.3333% - 6px); height: calc(100% - 6px);
+      background: rgba(255,255,255,0.90);
+      border-radius: var(--r-md);
+      border: 1px solid rgba(255,255,255,0.95);
       z-index: 1;
-
-      box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.12),
-        inset 0 1px 1px rgba(255, 255, 255, 0.6);
-
-      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 1px 5px rgba(0,0,0,0.13), 0 0 0 0.5px rgba(0,0,0,0.04);
+      transition: transform .45s cubic-bezier(.34,1.56,.64,1);
     }
+
+    /* =====================================================  VIEWS  */
+    /* .content defined above in app layout */
+    .view { display: none; animation: fadeUp .22s ease; }
+    .view.active { display: block; }
+    #view-history.active { display: flex; flex-direction: column; height: 100%; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+    /* =====================================================  FROSTED CARD  */
+    .card {
+      background: var(--glass);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border-radius: var(--r-xl);
+      border: 1px solid rgba(255,255,255,0.55);
+      box-shadow: var(--sh1);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    /* Internal row divider — light, no outer borders */
+    .row-divider { height: 1px; background: var(--line); margin: 0; }
 
     /* =====================================================
-   CONTENT / VIEW
-===================================================== */
-    .content {
-      margin: 0 10px;
-      padding: 20px;
-
-      background: rgb(50 50 50 / 5%);
-      border-radius: 25px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-
-      box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.05);
+       INPUT TAB — single unified card
+       Each field is a horizontal row: label left, input right
+    ===================================================== */
+    .form-row-inline {
+      display: flex; align-items: center;
+      padding: 12px 16px; gap: 12px;
+      min-height: 52px;
     }
 
-    #view-history,
-    #view-stats {
-      margin: -10px;
+    .row-label {
+      font-size: 13px; font-weight: 600; color: var(--t2);
+      flex-shrink: 0; width: 88px;
     }
 
-    .view {
-      display: none;
-      animation: fadeIn 0.3s ease;
+    .row-input { flex: 1; position: relative; display: flex; align-items: center; }
+
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 20; font-size: 17px; }
+    .icon-right { position: absolute; right: 10px; color: var(--t3); pointer-events: none; }
+
+    input, select {
+      width: 100%; padding: 8px 32px 8px 11px;
+      font-size: 14px; font-family: 'Google Sans', sans-serif; font-weight: 500;
+      color: var(--t1);
+      background: var(--glass-input);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: var(--r-md); outline: none;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+      -webkit-appearance: none; appearance: none;
+      box-shadow: var(--sh0);
     }
-
-    .view.active {
-      display: block;
+    input::placeholder { color: var(--t3); font-weight: 400; }
+    input:focus, select:focus {
+      border-color: var(--accent-ring);
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 0 0 3px var(--accent-pale);
     }
+    input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0; cursor: pointer; width: 100%; position: absolute; left: 0; }
+    select option { background: #f0f4ee; color: var(--t1); }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* Amount — bigger, prominent */
+    #amount {
+      font-size: 22px; font-weight: 700;
+      padding: 6px 40px 6px 11px;
+      color: var(--accent);
     }
+    #amount::placeholder { font-size: 18px; font-weight: 400; color: var(--t3); }
 
-    /* =====================================================
-   FORM ELEMENTS
-===================================================== */
-    .field-group {
-      margin-bottom: 20px;
+    /* Tasters — pills inline */
+    .tasters-row {
+      padding: 11px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-sub);
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .material-symbols-outlined {
-      font-variation-settings:
-        'FILL' 0,
-        'wght' 300,
-        'GRAD' 0,
-        'opsz' 24;
-    }
-
-    .icon-right {
-      position: absolute;
-      right: 10px;
-      color: var(--text-sub);
-      pointer-events: none;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 5px 40px 5px 15px;
-      font-size: 16px;
-
-      border-radius: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-
-      background: rgba(255, 255, 255, 0.7);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-    }
-
-    #date,
-    #payerSelect {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: none;
-    }
-
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 4px 16px rgba(255, 221, 0, 0.15);
-    }
-
-    /* Hide native date icon */
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    /* =====================================================
-   SPLIT / CHECKBOX
-===================================================== */
-    .split-box {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .check-item {
-      flex: 1;
-      min-width: 80px;
-    }
-
-    .check-item input {
-      display: none;
-    }
-
+    .tasters-label { font-size: 13px; font-weight: 600; color: var(--t2); flex-shrink: 0; width: 88px; }
+    .split-box { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+    .check-item { flex-shrink: 0; }
+    .check-item input { display: none; }
     .check-item label {
-      display: block;
-      padding: 5px;
-      text-align: center;
-
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(5px);
-
-      border-radius: 14px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      display: block; padding: 6px 13px;
+      font-size: 13px; font-weight: 600; color: var(--t2);
+      background: var(--glass-input);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: var(--r-pill);
+      cursor: pointer; transition: all .18s;
+      white-space: nowrap;
+      box-shadow: var(--sh0);
+    }
+    .check-item input:checked + label {
+      background: var(--accent-pale);
+      border-color: var(--accent-ring);
+      color: var(--accent);
+      box-shadow: 0 0 0 1.5px var(--accent-ring);
     }
 
-    .check-item input:checked+label {
-      background: var(--primary);
-      color: white;
-    }
-
-    /* =====================================================
-   BUTTONS
-===================================================== */
-    #btnSave {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
-
-      border: none;
-      border-radius: 16px;
-
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-
-      background: var(--primary);
-      color: white;
-
-      box-shadow: 0 4px 10px var(--primary);
-      transition: all 0.3s ease;
-    }
-
-    #btnSave:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px var(--primary);
-    }
-
-    #btnSave:active {
-      transform: translateY(0);
-    }
-
-    #btnSave:disabled {
-      opacity: 0.6;
-      box-shadow: none;
-    }
-
-    /* =====================================================
-   EXPAND BUTTON
-===================================================== */
     .expand-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(6px);
-      border-radius: 14px;
-
-      color: var(--text-sub);
+      display: flex; align-items: center; justify-content: center;
+      padding: 6px 10px;
+      background: var(--glass-input);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: var(--r-pill);
+      cursor: pointer; color: var(--t3); flex-shrink: 0; transition: all .18s;
+      font-size: 12px; font-weight: 600; gap: 3px;
+      display: none;
     }
+    .expand-arrow { transition: transform .3s ease; font-size: 10px; }
+    .expand-btn.expanded .expand-arrow { transform: rotate(180deg); }
 
-    .expand-arrow {
-      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    /* =====================================================  SAVE BUTTON  */
+    #btnSave {
+      width: 100%; padding: 13px;
+      border: none; border-radius: var(--r-lg);
+      font-family: 'Google Sans', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: .3px;
+      cursor: pointer;
+      background: var(--accent); color: white;
+      box-shadow: 0 4px 16px rgba(79,154,82,0.32);
+      transition: all .18s;
     }
+    #btnSave:hover  { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(79,154,82,0.40); }
+    #btnSave:active { transform: translateY(0); }
+    #btnSave:disabled { opacity: .5; box-shadow: none; transform: none; }
 
-    .expand-btn.expanded .expand-arrow {
-      transform: rotate(180deg);
-    }
-
-    /* =====================================================
-   TOAST
-===================================================== */
+    /* =====================================================  TOAST  */
     #toast {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 10000;
-
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      padding: 10px;
-      border-radius: 16px;
-
-      background: var(--blur-bg);
-      backdrop-filter: blur(10px);
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
-      transform: translateX(150%);
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      z-index: 10000; padding: 10px 18px;
+      border-radius: var(--r-pill);
+      background: var(--t1); color: white;
+      font-size: 13px; font-weight: 600;
+      white-space: nowrap; box-shadow: var(--sh3);
+      opacity: 0; transition: all .32s cubic-bezier(.34,1.56,.64,1);
     }
-
-    #toast.show {
-      transform: translateX(0);
-      opacity: 1;
-    }
-
-    .toast-success {
-      border-left: 4px solid #10b981;
-    }
-
-    .toast-error {
-      border-left: 4px solid #ef4444;
-    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.toast-error { background: var(--red); }
 
     /* =====================================================
-   HISTORY & CHART
-===================================================== */
-    .history-item,
-    #myChart {
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(10px);
+       HISTORY TAB
+    ===================================================== */
 
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 16px;
 
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    .history-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      flex-shrink: 0;
     }
 
-    .history-filter {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
+    .month-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: var(--r-md);
+      font-size: 12px; font-weight: 700; color: var(--t1);
+      cursor: pointer; user-select: none; transition: background .15s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.09);
     }
+    .month-pill:hover { background: rgba(255,255,255,0.90); }
+    .month-pill-arrow { font-size: 9px; opacity: .45; }
 
     .month-menu {
-      display: none;
-      position: absolute;
+      display: none; position: absolute;
+      top: calc(100% + 4px); left: 14px;
+      background: var(--glass-strong);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: var(--r-lg); box-shadow: var(--sh3);
+      z-index: 50; overflow: hidden; min-width: 148px;
+    }
+    .month-item { padding: 10px 16px; font-size: 13px; font-weight: 500; color: var(--t2); cursor: pointer; transition: background .12s; }
+    .month-item:hover { background: rgba(255,255,255,0.4); }
+    .month-item.active-month { color: var(--accent); font-weight: 700; }
 
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-      z-index: 20;
+    .history-count { margin-left: auto; font-size: 11px; color: var(--t3); font-weight: 600; }
+
+    /* Date group header */
+    .date-group { margin: 0; }
+    .date-group-label {
+      padding: 10px 14px 4px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .7px;
+      color: var(--t2);
     }
 
-    .month-item {
-      padding: 12px 16px;
-      cursor: pointer;
-    }
-
-    .month-item:hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-
-    .month-label {
-      /* Layout & Spacing */
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 10px;
-      /* Tăng padding để dễ bấm hơn trên mobile */
-
-      /* Typography */
-      font-size: 14px;
-      color: var(--text-sub);
-
-      /* Glassmorphism Effect */
-      background: rgba(255, 255, 255, 0.2);
-      /* Tăng độ sáng nền một chút */
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      /* Border & Shape */
-      border-radius: 99px;
-      /* Bo tròn hoàn toàn dạng viên thuốc */
-      border: 1px solid rgba(255, 255, 255, 0.5);
-
-      /* Shadow & Interaction */
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      user-select: none;
-      /* Tránh bôi đen chữ khi bấm nhanh */
-    }
-
-    /* Hiệu ứng khi di chuột vào (Dành cho máy tính) */
-    .month-label:hover {
-      background: rgba(255, 255, 255, 0.35);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-      border-color: rgba(255, 255, 255, 0.8);
-    }
-
-    /* Hiệu ứng khi nhấn vào (Phản hồi lực nhấn) */
-    .month-label:active {
-      transform: scale(0.95);
-      /* Thu nhỏ nhẹ khi nhấn */
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Thêm icon mũi tên nhỏ nếu bạn muốn nhấn mạnh đây là menu chọn */
-    .month-label::after {
-      content: '▼';
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    .filter-btn {
-      width: 48px;
-      cursor: pointer;
-      color: var(--text-sub);
-      background: rgb(255 255 255 / 5%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 25px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      line-height: 0;
-    }
-
-    .filter-btn:hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    /* hidden month input */
-    #historyMonth {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-
+    /* History items — no card wrapper, flat rows with dividers */
     .history-item {
-      padding: 10px 12px;
-      margin-bottom: 10px;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 11px;
+      padding: 10px 14px;
+      transition: background .15s;
+      animation: fadeUp .18s ease both;
     }
+    .history-item:hover { background: rgba(255,255,255,0.28); }
+    .history-item + .history-item { border-top: 1px solid rgba(0,0,0,0.07); }
+    .history-item.optimistic { background: var(--accent-pale); }
 
-    .history-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      border: 1px solid var(--primary-light);
-    }
-
-    #myChart {
-      padding: 20px;
-    }
-
-    /* History item content */
-    .history-main {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .history-title {
-      font-size: 14px;
-      display: block;
-      margin-bottom: 4px;
-      color: var(--text-primary);
-    }
-
-    .history-meta {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .history-right {
-      display: flex;
-      align-items: center;
-      margin-right: -5px;
-    }
-
-    .history-amount {
-      padding: 5px 10px;
-      margin-left: 10px;
-      font-weight: 600;
+    .item-icon {
+      width: 34px; height: 34px; flex-shrink: 0;
+      background: rgba(255,255,255,0.80);
+      border: 1px solid rgba(255,255,255,0.75);
+      border-radius: var(--r-md);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center;
       font-size: 16px;
-      color: #66bb6a;
-      background: rgb(50 50 50 / 5%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-
-      border-radius: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
-
-
-    /* =====================================================
-   FOOTER
-===================================================== */
-    .app-footer {
-      margin-top: 20px;
-      padding: 20px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-sub);
+    .item-body { flex: 1; min-width: 0; }
+    .item-title { font-size: 14px; font-weight: 600; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-meta  { font-size: 11.5px; color: var(--t3); margin-top: 1px; }
+    .item-right { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .item-amount      { font-size: 15px; font-weight: 700; color: var(--accent); }
+    .item-amount-unit { font-size: 11px; color: var(--t3); margin-left: 1px; }
+    .delete-btn {
+      width: 26px; height: 26px; border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--t3); transition: all .15s;
     }
+    .delete-btn:hover { background: var(--red-pale); color: var(--red); }
+
+    .empty-state { text-align: center; padding: 44px 20px; color: var(--t3); font-size: 14px; }
+
+    /* =====================================================  STATS  */
+    .stats-header { padding: 12px 14px 10px; border-bottom: 1px solid var(--line); position: relative; display: flex; align-items: center; gap: 8px; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    .stat-tile {
+      background: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.80);
+      border-radius: var(--r-lg); padding: 12px 13px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--t3); margin-bottom: 5px; }
+    .stat-value { font-size: 22px; font-weight: 700; color: var(--t1); line-height: 1; }
+    .stat-value span { font-size: 13px; color: var(--t3); font-weight: 500; margin-left: 1px; }
+    .stat-sub { font-size: 11px; color: var(--t3); margin-top: 3px; }
+    #myChart { padding: 4px 12px 14px; }
+
+    .app-footer { display: none; }
   </style>
 </head>
-
 <body>
 
-  <div id="loading-screen">
-    <div class="loader"></div>
-    <p style="color: var(--text-sub); margin-top: 16px;">Baking fresh data…</p>
+<div id="loading-screen">
+  <div class="loader"></div>
+  <p style="font-size:13px;color:var(--t3);margin-top:14px">Loading…</p>
+</div>
+
+<div id="toast"></div>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div>
+      <h1 class="app-title">Shareiz</h1>
+      <div class="app-subtitle">Oops, I Spent Again…</div>
+    </div>
+    <div class="month-badge">
+      <span class="material-symbols-outlined" style="font-size:13px;color:var(--accent)">calendar_month</span>
+      <span id="header-month-text">—</span>
+    </div>
   </div>
 
-  <div id="toast"></div>
-
-  <div class="card">
-    <div class="app-header">
-      <h3 class="app-title">Shareiz</h3>
-      <div class="app-subtitle">Oops, I Spent Again...</div>
-    </div>
+  <!-- NAV -->
+  <div class="nav-wrap">
     <div class="segmented-control">
       <div class="sliding-pill"></div>
-      <div class="segmented-item active" onclick="switchView('input')">🤏 MIX</div>
-      <div class="segmented-item" onclick="switchView('history')">🧁 TASTE</div>
-      <div class="segmented-item" onclick="switchView('stats')">🍕 SLICE</div>
+      <div class="segmented-item active" onclick="switchView('input',this)">🤏 MIX</div>
+      <div class="segmented-item"        onclick="switchView('history',this)">🧁 TASTE</div>
+      <div class="segmented-item"        onclick="switchView('stats',this)">🍕 SLICE</div>
     </div>
-    <div class="content">
-      <div id="view-input" class="view active">
-        <div class="field-group">
-          <label>Bake Day</label>
-          <div class="input-wrapper">
+  </div>
+
+  <div class="content">
+
+    <!-- ===================================================== INPUT TAB -->
+    <!-- Single unified card, each field = one horizontal row -->
+    <div id="view-input" class="view active">
+      <div class="card">
+
+        <!-- Date -->
+        <div class="form-row-inline">
+          <span class="row-label">Bake Day</span>
+          <div class="row-input">
             <input type="date" id="date">
             <span class="material-symbols-outlined icon-right">calendar_month</span>
           </div>
         </div>
 
-        <div class="field-group">
-          <label>Cookie Dough (VND)</label>
-          <div class="input-wrapper">
-            <input type="number" id="amount" placeholder="0đ">
-            <span class="material-symbols-outlined icon-right">1k</span>
+        <div class="row-divider"></div>
+
+        <!-- Amount — big and prominent -->
+        <div class="form-row-inline">
+          <span class="row-label">Amount</span>
+          <div class="row-input">
+            <input type="number" id="amount" placeholder="0 ₫">
+            <span class="material-symbols-outlined icon-right" style="color:var(--accent)">payments</span>
           </div>
         </div>
 
-        <div class="field-group">
-          <label>Chef</label>
-          <div class="input-wrapper">
+        <div class="row-divider"></div>
+
+        <!-- Chef -->
+        <div class="form-row-inline">
+          <span class="row-label">Chef</span>
+          <div class="row-input">
             <select id="payerSelect"></select>
             <span class="material-symbols-outlined icon-right">person</span>
           </div>
         </div>
 
-        <div class="field-group">
-          <label>Tasters</label>
+        <div class="row-divider"></div>
+
+        <!-- Tasters — pill checkboxes inline -->
+        <div class="tasters-row">
+          <span class="tasters-label">Tasters</span>
           <div id="split-box-main" class="split-box"></div>
-          <div id="split-box-more" class="split-box" style="display:none;"></div>
+          <div id="split-box-more" class="split-box" style="display:none"></div>
           <div id="toggle-more-btn" class="expand-btn" onclick="toggleMorePeople()">
-            <svg class="expand-arrow" width="16" height="16" viewBox="0 0 24 24">
-              <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
+            <span class="expand-arrow">▼</span>
           </div>
         </div>
 
-        <div class="field-group">
-          <label>Recipe Note</label>
-          <div class="input-wrapper">
-            <input id="note" type="text" placeholder="Cafe, Banh mi...">
+        <div class="row-divider"></div>
+
+        <!-- Note -->
+        <div class="form-row-inline">
+          <span class="row-label">Note</span>
+          <div class="row-input">
+            <input id="note" type="text" placeholder="Cafe, Banh mi, Pho…">
             <span class="material-symbols-outlined icon-right">stylus_note</span>
           </div>
         </div>
 
-        <button id="btnSave" onclick="save()">SERVE</button>
-      </div>
+      </div><!-- /card -->
 
-      <div id="view-history" class="view">
-        <div class="history-filter">
-          <span id="monthLabel" class="month-label" onclick="toggleMonthMenu()"></span>
-          <button class="filter-btn" onclick="">
-            <span class="material-symbols-outlined">search</span>
-          </button>
+      <button id="btnSave" onclick="save()">SERVE 🍪</button>
+    </div>
+
+    <!-- ===================================================== HISTORY TAB -->
+    <div id="view-history" class="view">
+      <div class="card">
+        <div class="history-header">
+          <span class="month-pill" onclick="toggleMonthMenu('monthMenu')">
+            <span id="monthLabelText">—</span>
+            <span class="month-pill-arrow">▼</span>
+          </span>
+          <div id="monthMenu" class="month-menu"></div>
+          <span class="history-count" id="history-count"></span>
         </div>
-        <div id="monthMenu" class="month-menu"></div>
-
         <div id="history-list"></div>
       </div>
+    </div>
 
-      <div id="view-stats" class="view">
-        <div class="history-filter">
-          <span id="monthLabel2" class="month-label"></span>
-
-          <input type="month" id="historyMonth" onchange="onMonthSelected(this.value)" />
+    <!-- ===================================================== STATS TAB -->
+    <div id="view-stats" class="view">
+      <div class="card">
+        <div class="stats-header">
+          <span class="month-pill" onclick="toggleMonthMenu('monthMenu2')">
+            <span id="monthLabel2Text">—</span>
+            <span class="month-pill-arrow">▼</span>
+          </span>
+          <div id="monthMenu2" class="month-menu"></div>
         </div>
-        <div id="myChart" style="height:300px;"></div>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div id="myChart" style="height:270px"></div>
       </div>
     </div>
 
-    <div class="app-footer">
-      Made with 🍪 by Ozz • <span id="app-version">v1.3</span>
-    </div>
-  </div>
+  </div><!-- /content -->
 
-  <script>
-    google.charts.load('current', { 'packages': ['corechart'] });
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
-    let cachedData = null;
+  <div class="app-footer">Made with 🍪 by Ozz · v4.0</div>
+</div>
 
-    async function loadInitialData() {
-      const now = new Date();
-      const dateInput = document.getElementById('date');
-      if (dateInput) dateInput.valueAsDate = now;
+<script>
+  google.charts.load('current', { packages: ['corechart'] });
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNDn0mJ-mWxrDxaHSV7qOMmChpNedjE_vgJeqWvtJ8epYXqiMOlK8Piph4WXUD2m1p/exec";
+  let cachedData = null;
+  let currentMonth = new Date().toISOString().slice(0, 7);
 
-      const defaultPeople = ["Bon", "Chin"];
-      renderForm(defaultPeople);
-      let currentMonth = now.toISOString().slice(0, 7);
-      updateMonthLabel(currentMonth);
-
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen) loadingScreen.style.display = 'none';
-      }, 500);
-
-      try {
-        const response = await fetch(SCRIPT_URL);
-        const data = await response.json();
-        cachedData = data;
-        console.log("Initial data loaded:", data);
-        renderForm(data.people);
-        renderHistory();
-        renderStats();
-        renderMonthMenu();
-      } catch (error) {
-        console.error("Error in loading init data:", error);
-        document.getElementById('loading-screen').innerHTML = "<p>Error: Please refresh</p>";
-      }
-
-      // Setup sticky nav sau khi load
-      setTimeout(() => {
-        setupStickyNav();
-      }, 100);
-    }
-
-    function showNotification(message, type = 'success') {
-      const t = document.getElementById('toast');
-      t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + message;
-      t.className = 'show ' + (type === 'success' ? 'toast-success' : 'toast-error');
-
-      setTimeout(() => {
-        t.className = '';
-      }, 2500);
-    }
-
-    function renderForm(people) {
-      const sel = document.getElementById('payerSelect');
-      const mainBox = document.getElementById('split-box-main');
-      const moreBox = document.getElementById('split-box-more');
-      const toggleBtn = document.getElementById('toggle-more-btn');
-
-      if (sel.options.length === people.length) return;
-
-      sel.innerHTML = '';
-      mainBox.innerHTML = '';
-      moreBox.innerHTML = '';
-
-      people.forEach((person, index) => {
-        sel.innerHTML += `<option value="${person}">${person}</option>`;
-
-        const html = `
-          <div class="check-item">
-            <input type="checkbox" id="cb${person}" value="${person}">
-            <label for="cb${person}">${person}</label>
-          </div>`;
-
-        if (index < 2) {
-          mainBox.innerHTML += html;
-        } else {
-          moreBox.innerHTML += html;
-        }
-      });
-
-      if (people.length > 2) {
-        toggleBtn.style.display = 'flex';
-      }
-    }
-
-    function toggleMorePeople() {
-      const moreBox = document.getElementById('split-box-more');
-      const btn = document.getElementById('toggle-more-btn');
-      const text = btn.querySelector('.expand-text');
-
-      const isOpen = btn.classList.contains('expanded');
-
-      if (!isOpen) {
-        moreBox.style.display = 'flex';
-        btn.classList.add('expanded');
-      } else {
-        moreBox.style.display = 'none';
-        btn.classList.remove('expanded');
-      }
-    }
-
-    function getHistory(inputMonth) {
-      const date = inputMonth ? new Date(inputMonth + "-01") : new Date();
-      const sheet = getDynamicSheet(date);
-      const data = sheet.getDataRange().getValues();
-
-      if (data.length <= 1) return [];
-
-      return data
-        .slice(1)
-        .map((row, i) => ({
-          rowIndex: i + 2, // real row index in sheet
-          date: row[0] instanceof Date
-            ? Utilities.formatDate(row[0], "GMT+7", "dd/MM")
-            : row[0],
-          amount: row[1],
-          payer: row[2],
-          note: row[4]
-        }))
-        .reverse()
-        .slice(0, 20);
-    }
-
-
-    function renderHistory() {
-      const list = document.getElementById('history-list');
-      list.innerHTML = '';
-
-      if (!cachedData?.history?.length) {
-        list.innerHTML = `<div class="history-item" style="justify-content:center;">
-      <span style="color:#94a3b8;">No data</span>
-    </div>`;
-        return;
-      }
-
-      list.innerHTML = cachedData.history.map(item => `
-    <div class="history-item">
-      <div class="history-main">
-        <span class="history-title">${item.note || 'Expense'}</span>
-        <small class="history-meta">${item.date} • by ${item.payer}</small>
-      </div>
-
-      <div class="history-right">
-        <div class="history-amount">${item.amount}.₫</div>
-        <span class="material-symbols-outlined"
-          style="cursor:pointer;color:#f44336; padding-left:8px;"
-          onclick="deleteHistory(${item.rowIndex})">
-          delete
-        </span>
-      </div>
-    </div>
-  `).join('');
-    }
-
-    let currentMonth = new Date().toISOString().slice(0, 7);
-    async function deleteHistory(rowIndex) {
-      if (!confirm("Delete this expense?")) return;
-
-      console.log("Deleting row:", rowIndex, "from month:", currentMonth);
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({
-          action: "delete",
-          rowIndex,
-          month: currentMonth
-        })
-      });
-
-      showNotification("Deleted");
-      loadHistoryByMonth();
-    }
-
-    function onMonthSelected(value) {
-      if (!value) return;
-
-      currentMonth = value;
-      updateMonthLabel(value);
-      loadHistoryByMonth();
-    }
-
-    function updateMonthLabel(month) {
-      const monthText = formatMonthLabel(month);
-      document.getElementById('monthLabel').innerText = monthText;
-      document.getElementById('monthLabel2').innerText = monthText;
-    }
-
-
-    // 2024-06 => Jun 2024
-    function formatMonthLabel(value) {
-      const [y, m] = value.split("-");
-      return new Date(y, m - 1).toLocaleString('en-US', {
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-
-
-    async function loadHistoryByMonth() {
-      const res = await fetch(`${SCRIPT_URL}?month=${currentMonth}`);
+  // =====================================================
+  // INIT
+  // =====================================================
+  async function loadInitialData() {
+    document.getElementById('date').valueAsDate = new Date();
+    updateMonthLabels(currentMonth);
+    renderForm(["Bon", "Chin"]);
+    try {
+      const res = await fetch(SCRIPT_URL);
       cachedData = await res.json();
-      console.log("Loaded data for month:", currentMonth, cachedData);
-      renderHistory();
-      renderStats();
+      renderForm(cachedData.people);
+      renderHistory(); renderStats(); renderMonthMenus();
+    } catch(e) {
+      showNotification("Could not load data", "error");
+    } finally {
+      document.getElementById('loading-screen').style.display = 'none';
+    }
+  }
+
+  // =====================================================
+  // SAVE — OPTIMISTIC
+  // =====================================================
+  async function save() {
+    const btn  = document.getElementById('btnSave');
+    const amt  = document.getElementById('amount');
+    const note = document.getElementById('note');
+
+    const payload = {
+      month: currentMonth,
+      date: document.getElementById('date').value,
+      amount: parseFloat(amt.value),
+      payer: document.getElementById('payerSelect').value,
+      sharedWith: [...document.querySelectorAll('.split-box input:checked')].map(c => c.value),
+      note: note.value.trim()
+    };
+
+    if (!payload.amount || payload.amount <= 0) { showNotification("Please enter amount", "error"); return; }
+    if (!payload.sharedWith.length)             { showNotification("Select at least one taster", "error"); return; }
+
+    const tid = 'tmp_' + Date.now();
+    if (!cachedData) cachedData = { history: [], stats: {} };
+    cachedData.history.unshift({
+      tempId: tid, date: fmtDateShort(payload.date),
+      amount: payload.amount, payer: payload.payer,
+      note: payload.note || 'Expense',
+      rowIndex: null, optimistic: true
+    });
+    if (cachedData.stats)
+      cachedData.stats[payload.payer] = (cachedData.stats[payload.payer] || 0) + payload.amount;
+
+    renderHistory(); renderStats();
+    amt.value = ''; note.value = '';
+    showNotification("Sweet success! 🍪");
+
+    btn.disabled = true;
+    try {
+      await fetch(SCRIPT_URL, { method:"POST", mode:"no-cors", body:JSON.stringify(payload) });
+      setTimeout(() => {
+        cachedData.history = cachedData.history.map(i => i.tempId === tid ? {...i, optimistic:false} : i);
+        renderHistory();
+      }, 1200);
+    } catch {
+      cachedData.history = cachedData.history.filter(i => i.tempId !== tid);
+      if (cachedData.stats) cachedData.stats[payload.payer] -= payload.amount;
+      renderHistory(); renderStats();
+      showNotification("Save failed, try again", "error");
+    } finally { btn.disabled = false; }
+  }
+
+  // =====================================================
+  // DELETE — OPTIMISTIC
+  // =====================================================
+  async function deleteHistory(rowIndex) {
+    if (!confirm("Delete this expense?")) return;
+    const removed = cachedData.history.find(i => i.rowIndex == rowIndex);
+    cachedData.history = cachedData.history.filter(i => i.rowIndex != rowIndex);
+    renderHistory(); showNotification("Deleted");
+    try {
+      await fetch(SCRIPT_URL, { method:"POST", mode:"no-cors", body:JSON.stringify({ action:"delete", rowIndex, month:currentMonth }) });
+    } catch {
+      if (removed) cachedData.history.unshift(removed);
+      renderHistory(); showNotification("Delete failed", "error");
+    }
+  }
+
+  // =====================================================
+  // FORM
+  // =====================================================
+  function renderForm(people) {
+    const sel  = document.getElementById('payerSelect');
+    const main = document.getElementById('split-box-main');
+    const more = document.getElementById('split-box-more');
+    const btn  = document.getElementById('toggle-more-btn');
+    if (sel.options.length === people.length) return;
+    sel.innerHTML = main.innerHTML = more.innerHTML = '';
+    people.forEach((p, i) => {
+      sel.innerHTML += `<option value="${p}">${p}</option>`;
+      const html = `<div class="check-item"><input type="checkbox" id="cb_${p}" value="${p}"><label for="cb_${p}">${p}</label></div>`;
+      (i < 4 ? main : more).innerHTML += html;
+    });
+    if (people.length > 4) btn.style.display = 'flex';
+  }
+
+  function toggleMorePeople() {
+    const more = document.getElementById('split-box-more');
+    const btn  = document.getElementById('toggle-more-btn');
+    const open = btn.classList.contains('expanded');
+    more.style.display = open ? 'none' : 'flex';
+    btn.classList.toggle('expanded', !open);
+  }
+
+  // =====================================================
+  // HISTORY — grouped by date
+  // =====================================================
+  const ICONS = {
+    cafe:'☕',coffee:'☕',highlands:'☕',pho:'🍜',bun:'🍜',mi:'🍜',phở:'🍜',
+    com:'🍚',cơm:'🍚',rice:'🍚',grab:'🚗',taxi:'🚗',xe:'🚗',
+    banh:'🥖',bánh:'🥖',bread:'🥖',bia:'🍺',beer:'🍺',nhậu:'🍺',
+    pizza:'🍕',nuoc:'💧',nước:'💧',tra:'🧋',trà:'🧋',milk:'🧋',
+    game:'🎮',cinema:'🎬',phim:'🎬',
+  };
+
+  function getIcon(note) {
+    if (!note) return '🧾';
+    const l = note.toLowerCase();
+    for (const [k,v] of Object.entries(ICONS)) if (l.includes(k)) return v;
+    return '🧾';
+  }
+
+  function fmtAmt(v) {
+    const n = parseFloat(v); if (isNaN(n)) return v;
+    if (n >= 1000) return (n/1000).toFixed(n%1000===0?0:1)+'k';
+    return n.toString();
+  }
+
+  function fmtDateShort(s) {
+    if (!s) return '';
+    return new Date(s).toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit' });
+  }
+
+  // Group items by date label
+  function getDateLabel(dateStr) {
+    if (!dateStr) return 'This month';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+    // dateStr is "DD/MM" — reconstruct with current year for comparison
+    const [d,m] = dateStr.split('/');
+    const itemDate = new Date(today.getFullYear(), parseInt(m)-1, parseInt(d));
+    if (itemDate.getTime() === today.getTime()) return 'Today';
+    if (itemDate.getTime() === yesterday.getTime()) return 'Yesterday';
+    return dateStr;
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    const cnt  = document.getElementById('history-count');
+
+    if (!cachedData?.history?.length) {
+      list.innerHTML = `<div class="empty-state"><div style="font-size:28px;margin-bottom:8px">🍃</div>No expenses this month</div>`;
+      if (cnt) cnt.textContent = ''; return;
     }
 
+    const real = cachedData.history.filter(i => !i.optimistic).length;
+    if (cnt) cnt.textContent = real ? `${real} entries` : '';
 
-
-    function renderStats() {
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        const stats = cachedData.stats;
-        const dataArray = [['Person', 'Total']];
-
-        for (let p in stats) {
-          dataArray.push([p, stats[p]]);
-        }
-
-        const data = google.visualization.arrayToDataTable(dataArray);
-        const options = {
-          title: 'Distribution',
-          pieHole: 0.3,
-          colors: ['#FFDD00', '#8BAE66', '#FA6868', '#90AB8B', '#EBF4DD', '#B45309'],
-          backgroundColor: 'transparent',
-          chartArea: {
-            width: '90%',
-            height: '80%'
-          }
-        };
-
-        const chart = new google.visualization.PieChart(document.getElementById('myChart'));
-        chart.draw(data, options);
-      }
-    }
-
-    async function save() {
-      const btn = document.getElementById('btnSave');
-      const amountInput = document.getElementById('amount');
-      const noteInput = document.getElementById('note');
-
-      const payload = {
-        month: currentMonth,
-        date: document.getElementById('date').value,
-        amount: amountInput.value,
-        payer: document.getElementById('payerSelect').value,
-        sharedWith: [...document.querySelectorAll('.split-box input:checked')].map(cb => cb.value),
-        note: noteInput.value
-      };
-
-      if (!payload.amount || payload.amount <= 0) {
-        showNotification("Please enter amount", "error");
-        return;
-      }
-
-      if (!payload.sharedWith || payload.sharedWith.length <= 0) {
-        showNotification("Please select at least one taster", "error");
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerText = "⏳ SERVING...";
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          body: JSON.stringify(payload)
-        });
-
-        setTimeout(() => {
-          loadInitialData();
-          showNotification("Sweet Success!");
-          amountInput.value = "";
-          noteInput.value = "";
-          btn.disabled = false;
-          btn.innerText = "SERVE";
-        }, 1500);
-      } catch (error) {
-        showNotification("Oops! Something went wrong", "error");
-        btn.disabled = false;
-        btn.innerText = "SERVE";
-      }
-    }
-
-    function switchView(view) {
-      document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.getElementById('view-' + view).classList.add('active');
-
-      movePillToActive();
-
-      if (view === 'history') renderHistory();
-      if (view === 'stats') renderStats();
-    }
-
-    function movePillToActive() {
-      const pill = document.querySelector('.sliding-pill');
-      const activeItem = document.querySelector('.segmented-item.active');
-
-      if (!pill || !activeItem) return;
-
-      const container = activeItem.parentElement;
-      const itemRect = activeItem.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-
-      const offsetX = itemRect.left - containerRect.left;
-      pill.style.transform = `translateX(${offsetX}px)`;
-    }
-
-    // Thêm sticky behavior
-    let lastScrollTop = 0;
-    let isSticky = false;
-
-    function setupStickyNav() {
-      const card = document.querySelector('.card');
-      const navWrapper = document.querySelector('.segmented-control-wrapper');
-      const content = document.querySelector('.content');
-
-      if (!card || !navWrapper) return;
-
-      // Theo dõi scroll
-      card.addEventListener('scroll', function () {
-        const scrollTop = card.scrollTop;
-        const scrollThreshold = 50; // Ngưỡng scroll để kích hoạt sticky
-
-        if (scrollTop > scrollThreshold) {
-          if (!isSticky) {
-            navWrapper.classList.add('sticky-active');
-            card.classList.add('scrolled');
-            isSticky = true;
-          }
-        } else {
-          if (isSticky) {
-            navWrapper.classList.remove('sticky-active');
-            card.classList.remove('scrolled');
-            isSticky = false;
-          }
-        }
-
-        // Optional: Hide/show khi cuộn xuống/lên
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-          // Scrolling down
-          navWrapper.style.transform = 'translateY(-10px)';
-          navWrapper.style.opacity = '0.9';
-        } else {
-          // Scrolling up
-          navWrapper.style.transform = 'translateY(0)';
-          navWrapper.style.opacity = '1';
-        }
-
-        lastScrollTop = scrollTop;
-      });
-
-      // Thêm scroll vào card
-      card.style.overflowY = 'auto';
-      card.style.maxHeight = 'calc(100vh - 40px)'; // Để có thể scroll
-      card.style.WebkitOverflowScrolling = 'touch'; // Smooth scroll trên iOS
-    }
-
-
-    function deleteExpense(rowIndex, month) {
-      if (!rowIndex || rowIndex < 2) {
-        throw new Error("Invalid rowIndex");
-      }
-
-      const sheet = getDynamicSheetByMonth(month);
-      sheet.deleteRow(rowIndex);
-    }
-
-    function renderMonthMenu() {
-      const menu = document.getElementById('monthMenu');
-      if (!cachedData?.months) return;
-      menu.innerHTML = cachedData.months
-        .map(m => `<div class="month-item" onclick="selectMonth('${m}', '${formatMonthLabel(m)}')">${formatMonthLabel(m)}</div>`)
-        .join('');
-    }
-
-    function selectMonth(value, label) {
-      currentMonth = value;
-      console.log("Selected month:", value, label);
-      document.getElementById('monthLabel').innerText = label;
-      document.getElementById('monthMenu').style.display = 'none';
-      loadHistoryByMonth();
-    }
-
-    function toggleMonthMenu() {
-      const menu = document.getElementById('monthMenu');
-      if (!menu) return;
-
-      menu.style.display =
-        menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    document.addEventListener('click', e => {
-      const menu = document.getElementById('monthMenu');
-      const filter = document.querySelector('.history-filter');
-
-      if (!menu || !filter) return;
-
-      if (!filter.contains(e.target)) {
-        menu.style.display = 'none';
-      }
+    // Group by date label
+    const groups = {};
+    cachedData.history.forEach(item => {
+      const lbl = item.optimistic ? 'Just now' : getDateLabel(item.date);
+      if (!groups[lbl]) groups[lbl] = [];
+      groups[lbl].push(item);
     });
 
+    let html = '';
+    Object.entries(groups).forEach(([label, items], gi) => {
+      html += `<div class="date-group">
+        <div class="date-group-label">${label}</div>`;
+      items.forEach((item, idx) => {
+        html += `
+        <div class="history-item ${item.optimistic?'optimistic':''}" style="animation-delay:${(gi*3+idx)*20}ms">
+          <div class="item-icon">${getIcon(item.note)}</div>
+          <div class="item-body">
+            <div class="item-title">${item.note||'Expense'}</div>
+            <div class="item-meta">by ${item.payer}${item.optimistic?' · syncing…':''}</div>
+          </div>
+          <div class="item-right">
+            <div><span class="item-amount">${fmtAmt(item.amount)}</span><span class="item-amount-unit">₫</span></div>
+            ${!item.optimistic?`<div class="delete-btn" onclick="deleteHistory(${item.rowIndex})">
+              <span class="material-symbols-outlined" style="font-size:15px">delete</span></div>`:''}
+          </div>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    list.innerHTML = html;
+  }
 
+  // =====================================================
+  // STATS
+  // =====================================================
+  function renderStats() {
+    const el = document.getElementById('stats-grid');
+    const stats = cachedData?.stats || {};
+    const total = Object.values(stats).reduce((a,b) => a+b, 0);
+    const entries = cachedData?.history?.filter(i => !i.optimistic).length || 0;
+    const avg = entries > 0 ? Math.round(total/entries) : 0;
+    el.innerHTML = `
+      <div class="stat-tile">
+        <div class="stat-label">Total Spent</div>
+        <div class="stat-value">${fmtAmt(total)}<span>₫</span></div>
+        <div class="stat-sub">${entries} transactions</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-label">Avg per Entry</div>
+        <div class="stat-value">${fmtAmt(avg)}<span>₫</span></div>
+        <div class="stat-sub">this month</div>
+      </div>`;
 
+    google.charts.setOnLoadCallback(() => {
+      const rows = Object.entries(stats).filter(([,v]) => v > 0);
+      if (!rows.length) return;
+      const data = google.visualization.arrayToDataTable([['Person','Total'], ...rows]);
+      new google.visualization.PieChart(document.getElementById('myChart')).draw(data, {
+        pieHole: 0.42,
+        colors: ['#4f9a52','#7dbf7f','#f0a04b','#d95f52','#7bafd4','#a58dd4'],
+        backgroundColor: 'transparent',
+        legend: { position:'bottom', textStyle:{ color:'#4a6044', fontSize:12, fontName:'Google Sans' } },
+        chartArea: { width:'88%', height:'74%' },
+        pieSliceBorderColor: 'rgba(255,255,255,0.6)',
+        tooltip: { textStyle:{ fontName:'Google Sans', color:'#1a2416' } }
+      });
+    });
+  }
 
+  // =====================================================
+  // MONTHS
+  // =====================================================
+  function updateMonthLabels(m) {
+    const lbl = fmtMonth(m);
+    document.getElementById('monthLabelText').textContent   = lbl;
+    document.getElementById('monthLabel2Text').textContent  = lbl;
+    document.getElementById('header-month-text').textContent = lbl;
+  }
 
-    window.onload = loadInitialData;
-    setTimeout(movePillToActive, 0);
-  </script>
+  function fmtMonth(v) {
+    const [y,m] = v.split('-');
+    return new Date(y, m-1).toLocaleString('en-US', { month:'short', year:'numeric' });
+  }
 
+  async function loadHistoryByMonth() {
+    try {
+      const res = await fetch(`${SCRIPT_URL}?month=${currentMonth}`);
+      cachedData = await res.json();
+      renderHistory(); renderStats();
+    } catch { showNotification("Failed to load month", "error"); }
+  }
+
+  function renderMonthMenus() {
+    if (!cachedData?.months) return;
+    ['monthMenu','monthMenu2'].forEach(id => {
+      document.getElementById(id).innerHTML = cachedData.months
+        .map(m => `<div class="month-item ${m===currentMonth?'active-month':''}" onclick="selectMonth('${m}')">${fmtMonth(m)}</div>`)
+        .join('');
+    });
+  }
+
+  function selectMonth(v) {
+    currentMonth = v; updateMonthLabels(v);
+    document.getElementById('monthMenu').style.display  = 'none';
+    document.getElementById('monthMenu2').style.display = 'none';
+    loadHistoryByMonth();
+  }
+
+  function toggleMonthMenu(id) {
+    const m = document.getElementById(id);
+    m.style.display = m.style.display === 'block' ? 'none' : 'block';
+  }
+
+  document.addEventListener('click', e => {
+    ['monthMenu','monthMenu2'].forEach(id => {
+      const menu = document.getElementById(id); if (!menu) return;
+      const pill = menu.previousElementSibling;
+      if (pill && !pill.contains(e.target) && !menu.contains(e.target)) menu.style.display = 'none';
+    });
+  });
+
+  // =====================================================
+  // VIEW SWITCH
+  // =====================================================
+  function switchView(view, el) {
+    document.querySelectorAll('.segmented-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+    movePill();
+    if (view === 'stats') renderStats();
+  }
+
+  function movePill() {
+    const pill   = document.querySelector('.sliding-pill');
+    const active = document.querySelector('.segmented-item.active');
+    if (!pill || !active) return;
+    pill.style.transform = `translateX(${active.getBoundingClientRect().left - active.parentElement.getBoundingClientRect().left}px)`;
+  }
+
+  // =====================================================
+  // TOAST
+  // =====================================================
+  function showNotification(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'success' ? '✓  ' : '✕  ') + msg;
+    t.className = 'show' + (type === 'error' ? ' toast-error' : '');
+    setTimeout(() => { t.className = ''; }, 2600);
+  }
+
+  window.onload = () => { loadInitialData(); setTimeout(movePill, 50); };
+</script>
 </body>
-
 </html>
