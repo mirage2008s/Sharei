@@ -23,6 +23,8 @@
       --glass-hover:  rgba(255, 255, 255, 0.65);
       --blur: blur(20px);
 
+      --t-creamy: #F0EDCC; /* A rich, creamy dark green for text */
+
       /* Accent — The Green Spectrum */
       --accent:      #346739; /* Deep Forest */
       --accent-mid:  #6D9E51; /* Leaf Green */
@@ -41,10 +43,11 @@
       --t1: #1a2e1b; /* Deepened for the new palette */
       --t2: #346739;
       --t3: #708569;
+      --t-creamy: #f0edcc;
 
       /* Dividers & shadows — adjusted for warmth */
       --line: rgba(52, 103, 57, 0.08);
-      --sh0: 0 1px 3px  rgba(52, 103, 57, 0.05);
+      --sh0: 0 0 2px 2px  rgba(52, 103, 57, 0.05);
       --sh1: 0 2px 10px rgba(52, 103, 57, 0.08);
       --sh2: 0 4px 20px rgba(52, 103, 57, 0.10);
       --sh3: 0 8px 32px rgba(52, 103, 57, 0.12);
@@ -55,6 +58,7 @@
       --r-lg:   13px;
       --r-xl:   16px;
       --r-pill: 9999px;
+      --r-pill3: 0 9999px 9999px 9999px;
     }
 
     *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -62,23 +66,18 @@
     body {
       margin: 0; height: 100dvh; overflow: hidden;
       font-family: 'Google Sans', sans-serif;
-      background: linear-gradient(150deg, var(--bg-a) 0%, var(--bg-b) 100%);
+      background: linear-gradient(135deg, #F0EDCC 0%, #A6CFA6 100%);
       background-attachment: fixed;
       display: flex; justify-content: center;
       color: var(--t1);
     }
 
     .glass-element {
-      background: var(--glass-warm);
-      /* This is the key to the frosted look */
-      backdrop-filter: blur(10px); 
-      -webkit-backdrop-filter: blur(10px); /* For Safari support */
-      
-      /* Optional: Adds a subtle border to define the edges */
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      
-      /* Optional: Makes it feel more premium */
-      box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.1);
+      background-color: var(--glass);
+      backdrop-filter: var(--blur) saturate(135%);
+      -webkit-backdrop-filter: var(--blur) saturate(135%);
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     }
 
     /* app fills full height — input/stats tab scrolls naturally, history tab locks */
@@ -91,7 +90,7 @@
 
     /* content area — input & stats can scroll normally */
     .content {
-      padding: 0 14px 20px;
+      padding: 0 12px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1;
@@ -148,7 +147,7 @@
       font-family: 'Pacifico', cursive; font-size: 28px; margin: 0; line-height: 1;
       color: var(--accent-mid);
     }
-    .app-subtitle { font-size: 12px; color: var(--t3); margin-top: 4px; }
+    .app-subtitle { font-size: 14px; color: var(--t3); margin-top: 4px; }
 
     .avatar-badge {
       display: inline-flex; align-items: center; gap: 5px;
@@ -159,12 +158,15 @@
 
     /* =====================================================  NAV  */
     .nav-wrap {
-      margin-top: 10px;
+      padding: 0 12px;
       position: sticky; top: 0; z-index: 100;
+      box-sizing: border-box;
+      width: 75%;
+      margin: 10px auto 0;
     }
     .segmented-control {
       position: relative; display: flex;
-      margin: 10px 20px;
+      margin-top: 10px;
       border-radius: var(--r-xl);
       padding: 2px;
     }
@@ -177,7 +179,7 @@
       border-radius: var(--r-md);
       transition: color .2s;
     }
-    .segmented-item.active { color: white; font-weight: 600; }
+    .segmented-item.active { color: var(--t-creamy); font-weight: 600; }
     .sliding-pill {
       position: absolute; top: 3px; left: 1px;
       width: calc(33.3333% - 5px); height: calc(100% - 6px);
@@ -222,15 +224,17 @@
 
     .row-input { flex: 1; position: relative; display: flex; align-items: center; }
 
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20; font-size: 20px;}
-    .icon-right { position: absolute; right: 10px; color: var(--t3); pointer-events: none; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20;}
+    .icon-right { position: absolute; right: 10px; color: var(--t3); pointer-events: none; width: 16px;height: 16px;}
+    .icon-m { width: 20px; height: 20px;}
+    .icon-s { width: 16px; height: 16px;}
 
     input, select {
-      width: 100%; padding: 10px 30px 10px 10px;
+      width: 100%; padding: 7px 30px 7px 10px;
       font-size: 14px; font-family: var(--font-main); font-weight: 500;
       color: var(--t1);
       background: var(--glass-input);
-      border: 0px solid rgba(255,255,255,0.45);
+      border: 0px solid var(--glass-strong);
       border-radius: var(--r-md); outline: none;
       /* transition: border-color .18s, box-shadow .18s, background .18s;
       -webkit-appearance: none; appearance: none; */
@@ -251,7 +255,7 @@
       padding: 6px 40px 6px 11px;
       color: var(--accent);
     }
-    #amount::placeholder { font-size: 18px; font-weight: 400; color: var(--t3); }
+    #amount::placeholder { font-size: 16px; font-weight: 300; color: var(--t3); }
 
     /* Tasters — pills inline */
     .tasters-row {
@@ -266,7 +270,7 @@
       font-size: 13px; font-weight: 600; color: var(--t2);
       background: var(--glass-input);
       border: 1px solid rgba(255,255,255,0.45);
-      border-radius: var(--r-pill);
+      border-radius: var(--r-pill3);
       cursor: pointer; transition: all .18s;
       white-space: nowrap;
       box-shadow: var(--sh0);
@@ -293,12 +297,15 @@
 
     /* =====================================================  SAVE BUTTON  */
     #btnSave {
-      width: 90%;
+      display: inline-flex;   /* Makes the button a flex container */
+      align-items: end;    /* Centers icon & text vertically */
+      justify-content: center; /* Centers everything horizontally */
+      gap: 8px;               /* Adds perfect spacing between icon and "SERVE" */
+      width: 100%;
       padding: 10px;
-      margin: 15px 20px;
       border: none; border-radius: var(--r-lg);
       font-family: var(--font-stylis);
-      color: white;
+      color: var(--t-creamy);
       font-size: 14px; font-weight: 700;
       cursor: pointer;
       background: var(--accent-mid); /* Was --accent */
@@ -311,16 +318,16 @@
 
     /* =====================================================  TOAST  */
     #toast {
-      position: fixed; bottom: 28px; left: 50%;
-      transform: translateX(-50%) translateY(60px);
+      position: fixed; top: -60px; left: 50%;
+      transform: translateX(-50%);
       z-index: 10000; padding: 10px 18px;
       border-radius: var(--r-pill);
       background: var(--t1); color: white;
       font-size: 13px; font-weight: 600;
       white-space: nowrap; box-shadow: var(--sh3);
-      opacity: 0; transition: all .32s cubic-bezier(.34,1.56,.64,1);
+      opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.show { top: 10px; opacity: 1; }
     #toast.toast-error { background: var(--red); }
 
     /* =====================================================
@@ -492,10 +499,9 @@
     /* =====================================================  CUSTOM PAYER DROPDOWN  */
     .payer-trigger {
       width: 100%; padding: 8px 36px 8px 11px;
-      font-size: 14px; font-family: 'Google Sans', sans-serif; font-weight: 600;
+      font-size: 14px; font-family: var(--font-main); font-weight: 600;
       color: var(--t1);
       background: var(--glass-input);
-      border: 1px solid rgba(255,255,255,0.45);
       border-radius: var(--r-md);
       box-shadow: var(--sh0);
       cursor: pointer; user-select: none;
@@ -522,12 +528,10 @@
       display: none; position: absolute;
       top: calc(100% + 6px); left: 0; right: 0;
       z-index: 200;
-      background: rgba(255,255,255,0.82);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255,255,255,0.80);
+      background: var(--accent-creamy);
+      border: 2px solid rgba(255,255,255,0.75);
       border-radius: var(--r-lg);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.07),
-                  0 0 0 1px rgba(255,255,255,0.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
       overflow: hidden;
       animation: dropIn .18s cubic-bezier(.34,1.56,.64,1);
     }
@@ -547,7 +551,8 @@
     }
     .payer-option:hover { background: rgba(255,255,255,0.55); }
     .payer-option.selected {
-      background: rgba(255,255,255,0.70);
+      border: 2px solid var(--accent-mid);
+      border-radius: var(--r-lg);
       color: var(--accent);
     }
     .payer-option-dot {
@@ -582,7 +587,7 @@
     </div>
     <div class="avatar-badge glass-element">
       <span id="avatar-name">Hello</span>
-      <span class="material-symbols-outlined" style="color:var(--accent)">person</span>
+      <svg class="icon-m" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat-icon lucide-chef-hat"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></svg>
     </div>
   </div>
 
@@ -608,7 +613,7 @@
           <span class="row-label">Bake Day</span>
           <div class="row-input">
             <input type="date" id="date">
-            <span class="material-symbols-outlined icon-right">calendar_month</span>
+            <svg class="icon-s icon-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
           </div>
         </div>
 
@@ -618,8 +623,8 @@
         <div class="form-row-inline">
           <span class="row-label">Amount</span>
           <div class="row-input">
-            <input type="number" id="amount" placeholder="0 ₫">
-            <span class="material-symbols-outlined icon-right" style="color:var(--accent)">payments</span>
+            <input type="number" id="amount" placeholder="0 × k">
+            <svg class="icon-s icon-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-dollar-sign-icon lucide-badge-dollar-sign"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>  
           </div>
         </div>
 
@@ -635,7 +640,7 @@
               <span class="material-symbols-outlined payer-trigger-arrow">expand_more</span>
             </div>
             <div class="payer-dropdown" id="payerDropdown">
-              <div class="payer-dropdown-header">Chef</div>
+              <div class="payer-dropdown-header">Who paid?</div>
               <div id="payerOptionsList"></div>
             </div>
             <!-- Hidden select keeps save() working unchanged -->
@@ -662,13 +667,21 @@
           <span class="row-label">Note</span>
           <div class="row-input">
             <input id="note" type="text" placeholder="Cafe, Banh mi, Pho…">
-            <span class="material-symbols-outlined icon-right">stylus_note</span>
+            <svg class="icon-s icon-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-line-icon lucide-pencil-line"><path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>
           </div>
         </div>
 
+        <div class="row-divider"></div>
+        <div class="form-row-inline">
+        <button id="btnSave" onclick="save()">
+          <svg class="icon-m" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cookie-icon lucide-cookie"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>
+          SERVE</button>
+        </div>
+
+
       </div><!-- /card -->
 
-      <button id="btnSave" onclick="save()">🍪 SERVE</button>
+      
     </div>
 
     <!-- ===================================================== HISTORY TAB -->
@@ -791,14 +804,15 @@
     const btn  = document.getElementById('btnSave');
     const amt  = document.getElementById('amount');
     const note = document.getElementById('note');
+    const date = document.getElementById('date').value;
 
     const payload = {
-      month: currentMonth,
-      date: document.getElementById('date').value,
+      month: date.slice(0,7),
+      date: date,
       amount: parseFloat(amt.value),
       payer: document.getElementById('payerSelect').value,
       sharedWith: [...document.querySelectorAll('.split-box input:checked')].map(c => c.value),
-      note: note.value.trim()
+      note: note.value.trim(),
     };
 
     if (!payload.amount || payload.amount <= 0) { showNotification("Please enter amount", "error"); return; }
@@ -951,9 +965,14 @@
   }
 
   function fmtAmt(v) {
-    const n = parseFloat(v); if (isNaN(n)) return v;
-    if (n >= 1000) return (n/1000).toFixed(n%1000===0?0:1)+'k';
-    return n.toString();
+    let n = parseFloat(v);
+    if (isNaN(n)) return v;
+    
+    if (n >= 1000) {
+      const mValue = n / 1000;
+      return (mValue % 1 === 0 ? mValue : mValue.toFixed(1)) + ' M';
+    }
+    return n.toString() + ' K';
   }
 
   function fmtDateShort(s) {
@@ -1187,6 +1206,7 @@
   }
 
   window.onload = () => { loadInitialData(); setTimeout(movePill, 50); };
+
 </script>
 </body>
 </html>
