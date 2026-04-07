@@ -17,6 +17,7 @@
 
       /* Warm Frosted Surfaces */
       --glass:        rgba(255, 255, 255, 0.45);
+      --glass-warm: rgba(240, 237, 204, 0.45);
       --glass-strong: rgba(255, 255, 255, 0.75);
       --glass-input:  rgba(255, 255, 255, 0.40);
       --glass-hover:  rgba(255, 255, 255, 0.65);
@@ -65,6 +66,19 @@
       background-attachment: fixed;
       display: flex; justify-content: center;
       color: var(--t1);
+    }
+
+    .glass-element {
+      background: var(--glass-warm);
+      /* This is the key to the frosted look */
+      backdrop-filter: blur(10px); 
+      -webkit-backdrop-filter: blur(10px); /* For Safari support */
+      
+      /* Optional: Adds a subtle border to define the edges */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      
+      /* Optional: Makes it feel more premium */
+      box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.1);
     }
 
     /* app fills full height — input/stats tab scrolls naturally, history tab locks */
@@ -136,30 +150,22 @@
     }
     .app-subtitle { font-size: 12px; color: var(--t3); margin-top: 4px; }
 
-    .month-badge {
+    .avatar-badge {
       display: inline-flex; align-items: center; gap: 5px;
-      padding: 7px 12px;
-      background: var(--glass-strong); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-      border-radius: var(--r-lg);
-      border: 1px solid rgba(255,255,255,0.6);
-      box-shadow: var(--sh0);
-      font-size: 12px; font-weight: 600; color: var(--t2);
+      padding: 3px 10px;
+      border-radius: var(--r-pill);
+      color: var(--t2);
     }
 
     /* =====================================================  NAV  */
     .nav-wrap {
-      padding: 10px 15px 5px;
+      margin-top: 10px;
       position: sticky; top: 0; z-index: 100;
     }
     .segmented-control {
       position: relative; display: flex;
       margin: 10px 20px;
-      background: rgb(50 50 50 / 0%);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      
       border-radius: var(--r-xl);
-      border: 2px solid var(--glass-strong);
-      box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, 0.05);
       padding: 2px;
     }
     .segmented-item {
@@ -173,13 +179,12 @@
     }
     .segmented-item.active { color: white; font-weight: 600; }
     .sliding-pill {
-      position: absolute; top: 5px; left: 4px;
-      width: calc(33.3333% - 10px); height: calc(100% - 10px);
+      position: absolute; top: 3px; left: 1px;
+      width: calc(33.3333% - 5px); height: calc(100% - 6px);
       background: var(--accent-mid);
       border-radius: var(--r-lg);
       z-index: 1;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12),
-        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.12);
       transition: transform .5s cubic-bezier(.34,1.56,.64,1);
     }
 
@@ -192,13 +197,9 @@
 
     /* =====================================================  FROSTED CARD  */
     .card {
-      background: var(--glass);
-      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
       border-radius: var(--r-xl);
-      border: 5px solid rgba(255,255,255,0.2);
-      box-shadow: var(--sh1);
       overflow: hidden;
-      margin-bottom: 12px;
+      margin: 10px 0;
     }
 
     /* Internal row divider — light, no outer borders */
@@ -210,7 +211,7 @@
     ===================================================== */
     .form-row-inline {
       display: flex; align-items: center;
-      padding: 12px 16px; gap: 12px;
+      padding: 12px 15px; gap: 5px;
       min-height: 52px;
     }
 
@@ -221,18 +222,18 @@
 
     .row-input { flex: 1; position: relative; display: flex; align-items: center; }
 
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 20; font-size: 17px; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20; font-size: 20px;}
     .icon-right { position: absolute; right: 10px; color: var(--t3); pointer-events: none; }
 
     input, select {
-      width: 100%; padding: 8px 32px 8px 11px;
-      font-size: 14px; font-family: 'Google Sans', sans-serif; font-weight: 500;
+      width: 100%; padding: 10px 30px 10px 10px;
+      font-size: 14px; font-family: var(--font-main); font-weight: 500;
       color: var(--t1);
       background: var(--glass-input);
-      border: 1px solid rgba(255,255,255,0.45);
+      border: 0px solid rgba(255,255,255,0.45);
       border-radius: var(--r-md); outline: none;
-      transition: border-color .18s, box-shadow .18s, background .18s;
-      -webkit-appearance: none; appearance: none;
+      /* transition: border-color .18s, box-shadow .18s, background .18s;
+      -webkit-appearance: none; appearance: none; */
       box-shadow: var(--sh0);
     }
     input::placeholder { color: var(--t3); font-weight: 400; }
@@ -294,7 +295,7 @@
     #btnSave {
       width: 90%;
       padding: 10px;
-      margin: 10px 20px;
+      margin: 15px 20px;
       border: none; border-radius: var(--r-lg);
       font-family: var(--font-stylis);
       color: white;
@@ -579,15 +580,15 @@
       <h1 class="app-title">Shareiz</h1>
       <div class="app-subtitle">Oops, I Spent Again…</div>
     </div>
-    <div class="month-badge">
-      <span class="material-symbols-outlined" style="font-size:13px;color:var(--accent)">calendar_month</span>
-      <span id="header-month-text">—</span>
+    <div class="avatar-badge glass-element">
+      <span id="avatar-name">Hello</span>
+      <span class="material-symbols-outlined" style="color:var(--accent)">person</span>
     </div>
   </div>
 
   <!-- NAV -->
   <div class="nav-wrap">
-    <div class="segmented-control">
+    <div class="segmented-control glass-element">
       <div class="sliding-pill"></div>
       <div class="segmented-item active" onclick="switchView('input',this)">🤏 MIX</div>
       <div class="segmented-item"        onclick="switchView('history',this)">🧁 TASTE</div>
@@ -600,7 +601,7 @@
     <!-- ===================================================== INPUT TAB -->
     <!-- Single unified card, each field = one horizontal row -->
     <div id="view-input" class="view active">
-      <div class="card">
+      <div class="card glass-element">
 
         <!-- Date -->
         <div class="form-row-inline">
@@ -672,7 +673,7 @@
 
     <!-- ===================================================== HISTORY TAB -->
     <div id="view-history" class="view">
-      <div class="card">
+      <div class="card glass-element">
         <div class="history-header">
           <span class="month-pill" onclick="toggleMonthMenu('monthMenu')">
             <span id="monthLabelText">—</span>
@@ -687,7 +688,7 @@
 
     <!-- ===================================================== STATS TAB -->
     <div id="view-stats" class="view">
-      <div class="card">
+      <div class="card glass-element">
         <div class="stats-header">
           <span class="month-pill" onclick="toggleMonthMenu('monthMenu2')">
             <span id="monthLabel2Text">—</span>
@@ -1090,7 +1091,7 @@
     const lbl = fmtMonth(m);
     document.getElementById('monthLabelText').textContent   = lbl;
     document.getElementById('monthLabel2Text').textContent  = lbl;
-    document.getElementById('header-month-text').textContent = lbl;
+    // document.getElementById('header-month-text').textContent = lbl;
   }
 
   function fmtMonth(v) {
