@@ -16,14 +16,12 @@
       --bg-b: #F2EDC2; /* Creamy Linen with a touch of warmth */
 
       /* Warm Frosted Surfaces */
-      --glass:        rgba(255, 255, 255, 0.45);
-      --glass-warm: rgba(240, 237, 204, 0.45);
+      --glass:        rgba(255, 255, 255, 0.55);
+      --glass-warm: rgba(240, 237, 204, 0.55);
       --glass-strong: rgba(255, 255, 255, 0.75);
       --glass-input:  rgba(255, 255, 255, 0.40);
       --glass-hover:  rgba(255, 255, 255, 0.65);
       --blur: blur(20px);
-
-      --t-creamy: #F0EDCC; /* A rich, creamy dark green for text */
 
       /* Accent — The Green Spectrum */
       --accent:      #346739; /* Deep Forest */
@@ -43,7 +41,7 @@
       --t1: #1a2e1b; /* Deepened for the new palette */
       --t2: #346739;
       --t3: #708569;
-      --t-creamy: #f0edcc;
+      --t-creamy: #F9F8F0; /* Bone-white for text on accent backgrounds */
 
       /* Dividers & shadows — adjusted for warmth */
       --line: rgba(52, 103, 57, 0.08);
@@ -74,8 +72,8 @@
 
     .glass-element {
       background-color: var(--glass);
-      backdrop-filter: var(--blur) saturate(135%);
-      -webkit-backdrop-filter: var(--blur) saturate(135%);
+      backdrop-filter: var(--blur) saturate(75%);
+      -webkit-backdrop-filter: var(--blur) saturate(75%);
       border: 1px solid rgba(255, 255, 255, 0.3); 
       box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     }
@@ -94,6 +92,7 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1;
+      margin-bottom: 10px;
     }
 
     //* history view fills remaining space without overflowing — only when active */
@@ -140,28 +139,27 @@
 
     /* =====================================================  HEADER  */
     .app-header {
-      padding: 28px 20px 8px;
+      padding: 20px 20px 10px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .app-title {
       font-family: 'Pacifico', cursive; font-size: 28px; margin: 0; line-height: 1;
       color: var(--accent-mid);
     }
-    .app-subtitle { font-size: 14px; color: var(--t3); margin-top: 4px; }
+    .app-subtitle { font-size: 12px; color: var(--t3); margin-top: 4px; }
 
     .avatar-badge {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 10px;
       border-radius: var(--r-pill);
-      color: var(--t2);
+      color: var(--t2); font-size: 12px; font-weight: 700;
     }
 
     /* =====================================================  NAV  */
     .nav-wrap {
       padding: 0 12px;
       position: sticky; top: 0; z-index: 100;
-      box-sizing: border-box;
-      width: 75%;
+      width: 80%;
       margin: 10px auto 0;
     }
     .segmented-control {
@@ -173,7 +171,7 @@
     .segmented-item {
       flex: 1; text-align: center; padding: 9px 4px;
       font-family: var(--font-stylis);
-      font-size: 12px; font-weight: 500; color: rgba(60,52,40,0.65);
+      font-size: 13px; font-weight: 600; color: rgba(60,52,40,0.65);
       cursor: pointer; user-select: none;
       position: relative; z-index: 2;
       border-radius: var(--r-md);
@@ -230,7 +228,7 @@
     .icon-s { width: 16px; height: 16px;}
 
     input, select {
-      width: 100%; padding: 7px 30px 7px 10px;
+      width: 100%; padding: 7px 30px 5px 10px;
       font-size: 14px; font-family: var(--font-main); font-weight: 500;
       color: var(--t1);
       background: var(--glass-input);
@@ -240,7 +238,7 @@
       -webkit-appearance: none; appearance: none; */
       box-shadow: var(--sh0);
     }
-    input::placeholder { color: var(--t3); font-weight: 400; }
+    input::placeholder { color: var(--t3); font-weight: 300; }
     input:focus, select:focus {
       border-color: var(--accent-ring);
       background: rgba(255,255,255,0.72);
@@ -255,13 +253,13 @@
       padding: 6px 40px 6px 11px;
       color: var(--accent);
     }
-    #amount::placeholder { font-size: 16px; font-weight: 300; color: var(--t3); }
+    #amount::placeholder { font-size: 14px; font-weight: 300; color: var(--t3); }
 
-    /* Tasters — pills inline */
+    /* Tasters — pills inline
     .tasters-row {
       padding: 11px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    }
-    .tasters-label { font-size: 13px; font-weight: 600; color: var(--t2); flex-shrink: 0; width: 88px; }
+    } */
+    /* .tasters-label { font-size: 13px; font-weight: 600; color: var(--t2); flex-shrink: 0; width: 88px; } */
     .split-box { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
     .check-item { flex-shrink: 0; }
     .check-item input { display: none; }
@@ -290,7 +288,7 @@
       border-radius: var(--r-pill);
       cursor: pointer; color: var(--t3); flex-shrink: 0; transition: all .18s;
       font-size: 12px; font-weight: 600; gap: 3px;
-      display: none;
+      /* display: none; */
     }
     .expand-arrow { transition: transform .3s ease; font-size: 10px; }
     .expand-btn.expanded .expand-arrow { transform: rotate(180deg); }
@@ -314,7 +312,17 @@
     }
     #btnSave:hover  { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(79,154,82,0.40); }
     #btnSave:active { transform: translateY(0); }
-    #btnSave:disabled { opacity: .5; box-shadow: none; transform: none; }
+    #btnSave:disabled { opacity: 0.8; cursor: not-allowed; filter: grayscale(0.5); }
+
+    .is-eating {
+      animation: wiggle 0.3s infinite alternate;
+    }
+
+    @keyframes wiggle {
+      from { transform: rotate(-10deg) }
+      to { transform: rotate(10deg) }
+    }
+
 
     /* =====================================================  TOAST  */
     #toast {
@@ -623,7 +631,7 @@
         <div class="form-row-inline">
           <span class="row-label">Amount</span>
           <div class="row-input">
-            <input type="number" id="amount" placeholder="0 × k">
+            <input type="number" id="amount" placeholder=".000">
             <svg class="icon-s icon-right" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-dollar-sign-icon lucide-badge-dollar-sign"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>  
           </div>
         </div>
@@ -651,8 +659,8 @@
         <div class="row-divider"></div>
 
         <!-- Tasters — pill checkboxes inline -->
-        <div class="tasters-row">
-          <span class="tasters-label">Tasters</span>
+        <div class="form-row-inline">
+          <span class="row-label">Tasters</span>
           <div id="split-box-main" class="split-box"></div>
           <div id="split-box-more" class="split-box" style="display:none"></div>
           <div id="toggle-more-btn" class="expand-btn" onclick="toggleMorePeople()">
@@ -674,8 +682,8 @@
         <div class="row-divider"></div>
         <div class="form-row-inline">
         <button id="btnSave" onclick="save()">
-          <svg class="icon-m" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cookie-icon lucide-cookie"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>
-          SERVE</button>
+          <svg id="icoSave" class="icon-m" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cookie-icon lucide-cookie"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></svg>
+          <span id="txtSave">SERVE</span></button>
         </div>
 
 
@@ -805,7 +813,8 @@
     const amt  = document.getElementById('amount');
     const note = document.getElementById('note');
     const date = document.getElementById('date').value;
-
+    const icon = document.getElementById('icoSave');
+    const textSave = document.getElementById('txtSave');
     const payload = {
       month: date.slice(0,7),
       date: date,
@@ -829,11 +838,14 @@
     if (cachedData.stats)
       cachedData.stats[payload.payer] = (cachedData.stats[payload.payer] || 0) + payload.amount;
 
-    renderHistory(); renderStats();
-    amt.value = ''; note.value = '';
-    showNotification("Sweet success! 🍪");
+
 
     btn.disabled = true;
+    textSave.textContent = "Cooking…";
+    icon.classList.add('is-eating');
+        renderHistory(); renderStats();
+    amt.value = ''; note.value = '';
+    showNotification("Sweet success! 🍪");
     try {
       await fetch(SCRIPT_URL, { method:"POST", mode:"no-cors", body:JSON.stringify(payload) });
       setTimeout(() => {
@@ -845,7 +857,9 @@
       if (cachedData.stats) cachedData.stats[payload.payer] -= payload.amount;
       renderHistory(); renderStats();
       showNotification("Save failed, try again", "error");
-    } finally { btn.disabled = false; }
+    } finally { btn.disabled = false; icon.classList.remove('is-eating'); textSave.textContent = "SERVE";}
+
+
   }
 
   // =====================================================
@@ -1124,7 +1138,7 @@
     if (cnt) cnt.textContent = '';
     let html = '<div class="history-skeleton">';
     for (let i = 0; i < 5; i++) {
-      html += `<div class="hskel-item" style="opacity:${1 - i*0.12}">
+      html += `<div class="hskel-item" style="opacity:${1.5 - i*0.12}">
         <div class="hskel-icon"></div>
         <div class="hskel-body">
           <div class="hskel-title" style="width:${45+Math.random()*30}%"></div>
